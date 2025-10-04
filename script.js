@@ -1,7 +1,7 @@
-// script.js — Firebase Auth + Firestore (type=module en index.html)
-
-// 1) Importar SDK modular desde CDN
+// 1) App (necesario para initializeApp)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+// 2) Auth (login, signup, sesión)
 import {
   getAuth,
   onAuthStateChanged,
@@ -9,20 +9,42 @@ import {
   createUserWithEmailAndPassword,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// 3) Firestore (todas las funciones que usa tu código)
 import {
-  getFirestore,
-  doc, getDoc, setDoc, updateDoc,
-  collection, addDoc, query, where, orderBy, limit,
-  getDocs, serverTimestamp,
+  initializeFirestore,
+  collection, addDoc, doc, getDoc, setDoc, updateDoc, deleteDoc,
+  serverTimestamp,
+  query, where, orderBy, limit, getDocs,
   getCountFromServer
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+async function deleteSurvey(id) {
+    if (!id) return;
+    if (!currentProfile || currentProfile.role !== "admin") {
+      return alert("Solo admin puede eliminar encuestas.");
+    }
+    const ok = confirm("¿Eliminar esta encuesta de forma permanente?");
+    if (!ok) return;
+    try {
+      const ref = doc(db, "surveys", id);
+      await deleteDoc(ref);
+      await loadCounts();
+      await listOwnSurveys();
+      await listQueue();
+    } catch (e) {
+      alert("No se pudo eliminar la encuesta.");
+      console.error(e);
+    }
+  }
+
 
 // 2) Configuración Firebase (rellena con tus datos)
 const firebaseConfig = {
     apiKey: "AIzaSyBlwKRRryoxAK620PmE8GorHrne5tE9t8Q",
     authDomain: "clinmed-d9151.firebaseapp.com",
     projectId: "clinmed-d9151",
-    storageBucket: "clinmed-d9151.firebasestorage.app",
+    storageBucket: "clinmed-d9151.appspot.com",
     messagingSenderId: "779598822875",
     appId: "1:779598822875:web:c155fbbe83cbdc6ba2fbfe"
   };
@@ -30,7 +52,10 @@ const firebaseConfig = {
 // 3) Inicializar
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true,
+    useFetchStreams: false
+  });
 
 // 4) UI refs
 const el = (id) => document.getElementById(id);
@@ -60,6 +85,29 @@ const roleSelect = el("role-select");
 // 5) Estado
 let currentUser = null;     // auth.currentUser
 let currentProfile = null;  // { email, role }
+
+function roleName() {
+  const base = (currentProfile?.role || "").toString().trim().toLowerCase();
+  const email = (currentUser?.email || "").toLowerCase();
+   // DEMO override: mapear por email
+  if (email === "admin@unknownshoppers.com") return "admin";
+  if (email === "supervision@clinmed.com") return "supervisor";
+  if (email === "encuestra@clinmed.com") return "encuestador";
+  return base;
+}
+
+// Ahora, editar solo admin
+function canEdit() { 
+    return roleName() === "admin";
+}
+function isAdmin() {
+    return roleName() === "admin";
+}
+// Debug helpers (remover luego)
+window.roleName = roleName;
+window.canEdit = canEdit;
+window.isAdmin = isAdmin;
+window._profile = () => currentProfile;
 
 // 6) Vistas
 function showAuth() {
@@ -154,49 +202,142 @@ async function loadCounts() {
     }
   }
 
-async function listOwnSurveys() {
-  if (!currentUser) return;
-  const coll = collection(db, "surveys");
-  const q1 = query(
-    coll,
-    where("created_by", "==", currentUser.uid),
-    orderBy("created_at", "desc"),
-    limit(50)
-  );
-  const qs = await getDocs(q1);
-  surveysList.innerHTML = qs.docs
-    .map((d) => {
-      const s = d.data();
-      const createdAt = s.created_at?.toDate
-        ? s.created_at.toDate().toLocaleString()
-        : "";
-      return `<div class="card"><strong>${d.id}</strong><div class="muted">${s.status} — ${createdAt}</div></div>`;
-    })
-    .join("");
-}
+  async function listOwnSurveys() {
+    if (!currentUser) return;
+    const coll = collection(db, "surveys");
+    try {
+        let q1;
+        if (isAdmin() || roleName() === "supervisor") {
+          // Admin/Supervisor: ver todas
+          q1 = query(coll, orderBy("created_at", "desc"), limit(50));
+        } else {
+          // Encuestador: solo propias
+          q1 = query(
+            coll,
+            where("created_by", "==", currentUser.uid),
+            orderBy("created_at", "desc"),
+            limit(50)
+          );
+        }
+      const qs = await getDocs(q1);
+      surveysList.innerHTML = qs.docs.map((d, i) => {
+        const s = d.data();
+        const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString() : "";
+        const label = `Clinmed${String(i + 1).padStart(3, "0")}`;
+        return `<div class="card">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <a href="encuesta.html?id=${d.id}"><strong>${label}</strong></a>
+            <span class="muted">${s.status} — ${createdAt}</span>
+          </div>
+          <div class="row">
+            <a class="btn btn-outline" href="encuesta.html?id=${d.id}">Ver</a>
+            ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit">Editar</a>` : ``}
+            ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}">Eliminar</button>` : ``}
+          </div>
+        </div>`;
+      }).join("");
+    } catch (e) {
+      // Fallback sin orderBy mientras el índice se habilita
+      if (e?.code === "failed-precondition") {
+        let q2;
+        if (isAdmin() || roleName() === "supervisor") {
+        q2 = query(coll, limit(50)); // todas
+      } else {
+        q2 = query(coll, where("created_by", "==", currentUser.uid), limit(50)); // propias
+      }
+    const qs = await getDocs(q2);
+    // luego mantén tu sort manual (desc por created_at) y el render como ya lo tienes
 
-async function listQueue() {
-  if (!currentProfile?.role || !["supervisor", "admin"].includes(currentProfile.role)) return;
-  const coll = collection(db, "surveys");
-  const q1 = query(coll, where("status", "==", "submitted"), orderBy("created_at", "desc"), limit(50));
-  const qs = await getDocs(q1);
-  queueList.innerHTML = qs.docs
-    .map((d) => {
-      const s = d.data();
-      const createdAt = s.created_at?.toDate
-        ? s.created_at.toDate().toLocaleString()
-        : "";
-      return `<div class="card">
-        <div><strong>${d.id}</strong> · ${s.status}</div>
-        <div class="muted">${createdAt}</div>
-        <div class="row">
-          <button class="btn" data-approve="${d.id}">Aprobar</button>
-          <button class="btn btn-outline" data-reject="${d.id}">Rechazar</button>
-        </div>
-      </div>`;
-    })
-    .join("");
-}
+        const ownDocs = qs.docs.slice().sort((a, b) => {
+        const ta = a.data().created_at?.toMillis?.() ?? 0;
+        const tb = b.data().created_at?.toMillis?.() ?? 0;
+        return tb - ta;
+    });
+   
+   surveysList.innerHTML = ownDocs.map((d, i) => {
+  const s = d.data();
+  const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString() : "";
+  const label = `Clinmed${String(i + 1).padStart(3, "0")}`;
+  return `<div class="card">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <a href="encuesta.html?id=${d.id}"><strong>${label}</strong></a>
+      <span class="muted">${s.status} — ${createdAt}</span>
+    </div>
+    <div class="row">
+      <a class="btn btn-outline" href="encuesta.html?id=${d.id}">Ver</a>
+      ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit">Editar</a>` : ``}
+      ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}">Eliminar</button>` : ``}
+    </div>
+  </div>`;
+}).join("");
+      } else {
+        console.error(e);
+      }
+    }
+  }
+
+  async function listQueue() {
+    if (!currentProfile?.role || !["supervisor","admin"].includes(currentProfile.role)) return;
+    const coll = collection(db, "surveys");
+    try {
+        const q1 = query(
+          coll,
+          where("status","==","submitted"),
+          orderBy("created_at","desc"),
+          limit(50)
+        );
+        const qs = await getDocs(q1);
+      
+        queueList.innerHTML = qs.docs.map((d, i) => {
+          const s = d.data();
+          const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString() : "";
+          const label = `Clinmed${String(i + 1).padStart(3, "0")}`;
+          return `<div class="card">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <div><a href="encuesta.html?id=${d.id}"><strong>${label}</strong></a> · ${s.status}</div>
+              ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}">Eliminar</button>` : ``}
+            </div>
+            <div class="muted">${createdAt}</div>
+            <div class="row">
+              <a class="btn btn-outline" href="encuesta.html?id=${d.id}">Ver</a>
+              ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit">Editar</a>` : ``}
+              <button class="btn" data-approve="${d.id}">Aprobar</button>
+              <button class="btn btn-outline" data-reject="${d.id}">Rechazar</button>
+            </div>
+          </div>`;
+        }).join("");
+      } catch (e) {
+        if (e?.code === "failed-precondition") {
+          const q2 = query(coll, where("status","==","submitted"), limit(50));
+          const qs = await getDocs(q2);
+          const docsSorted = qs.docs.slice().sort((a, b) => {
+            const ta = a.data().created_at?.toMillis?.() ?? 0;
+            const tb = b.data().created_at?.toMillis?.() ?? 0;
+            return tb - ta;
+          });
+          queueList.innerHTML = docsSorted.map((d, i) => {
+            const s = d.data();
+            const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString() : "";
+            const label = `Clinmed${String(i + 1).padStart(3, "0")}`;
+            return `<div class="card">
+              <div class="row" style="justify-content:space-between;align-items:center">
+                <div><a href="encuesta.html?id=${d.id}"><strong>${label}</strong></a> · ${s.status}</div>
+                ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}">Eliminar</button>` : ``}
+              </div>
+              <div class="muted">${createdAt}</div>
+              <div class="row">
+                <a class="btn btn-outline" href="encuesta.html?id=${d.id}">Ver</a>
+                ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit">Editar</a>` : ``}
+                <button class="btn" data-approve="${d.id}">Aprobar</button>
+                <button class="btn btn-outline" data-reject="${d.id}">Rechazar</button>
+              </div>
+            </div>`;
+          }).join("");
+        } else {
+          console.error(e);
+        }
+      }
+  }
 
 async function listUsers() {
   if (currentProfile?.role !== "admin") return;
@@ -251,7 +392,8 @@ function bindEvents() {
     if (!email || !password) return;
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch {
+    } catch (err) {
+      console.error("Auth error:", err?.code, err?.message, err);
       alert("Credenciales inválidas");
     }
   });
@@ -285,6 +427,23 @@ function bindEvents() {
     if (idReject) return updateSurveyStatus(idReject, "rejected");
   });
 
+  // Eliminar desde lista propia (admin)
+surveysList?.addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-del]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-del");
+    await deleteSurvey(id);
+  });
+  
+  // Eliminar desde cola (admin)
+  queueList?.addEventListener("click", async (e) => {
+    const btnDel = e.target.closest("button[data-del]");
+    if (!btnDel) return;
+    const id = btnDel.getAttribute("data-del");
+    await deleteSurvey(id);
+  });
+
+
   formAssignRole?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = (roleEmail.value || "").trim();
@@ -312,6 +471,7 @@ async function refreshAppState() {
   } catch (e) {
     console.error(e);
   }
+  console.log("DEBUG role:", currentProfile?.role, "| normalized:", roleName(), "| email:", currentUser?.email);
   applyRoleVisibility(currentProfile?.role);
   showDashboard();
   await loadCounts();
@@ -322,11 +482,11 @@ async function refreshAppState() {
 
 // 11) Boot
 function boot() {
-  bindEvents();
-  onAuthStateChanged(auth, async () => {
-    await refreshAppState();
-  });
-  // Primer render
-  refreshAppState();
-}
-window.addEventListener("DOMContentLoaded", boot);
+    bindEvents();
+    onAuthStateChanged(auth, async () => {
+      await refreshAppState();
+    });
+    // Primer render
+    refreshAppState();
+  }
+  window.addEventListener("DOMContentLoaded", boot);

@@ -16,8 +16,19 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Inter,syst
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
 label{display:flex;flex-direction:column;gap:6px;margin:8px 0}
-input,select{appearance:none;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:15px}
+input:not([type="checkbox"]),select{
+    appearance:none;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:15px;
+  }
 
+  label.row{
+    flex-direction:row;
+    align-items:center;
+    gap:8px;
+  }
 .btn{appearance:none;border:1px solid #cfe1ff;border-radius:10px;padding:10px 14px;font-weight:700;font-size:14px;cursor:pointer;background:linear-gradient(180deg,var(--primary),#1565c0);color:#fff;box-shadow:0 6px 14px rgba(21,101,192,.22)}
 .btn:disabled{opacity:.6;cursor:not-allowed}
 .btn-outline{background:#fff;color:var(--primary)}
@@ -32,3 +43,10 @@ input,select{appearance:none;border:1px solid var(--border);border-radius:8px;pa
 .muted{color:var(--muted)}
 
 @media (max-width:760px){.app{margin:12px}.grid-2{grid-template-columns:1fr}}
+
+.hidden{ display:none !important; }
+
+/* Enlaces tipo card */
+a.card{ display:block; text-decoration:none; color:inherit; }
+a.card:hover{ border-color:#c6d0e0; background:#f9fbff; }
+a.card{ cursor:pointer; }
