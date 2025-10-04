@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Propuesta Final — Consultorios Clínicos | The Unknown Shopper</title>
+  <meta name="description" content="Propuesta final para Consultorios Clínicos: estudio de mercado con captura de encuestas (n=250) y sistema web con dashboard clínico, tabulados y módulo de unidad económica. Total $40,000 MXN + IVA." />
+  <link rel="icon" href="../logch.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#f7f7f9; --paper:#fff; --ink:#0f172a; --muted:#64748b; --primary:#1e88e5; --border:#e5e7eb; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 "Inter",system-ui,Segoe UI,Roboto,Arial,sans-serif}
+    .page{max-width:900px;margin:40px auto;background:var(--paper);border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 30px rgba(10,31,68,.08);overflow:clip}
+    .header{display:grid;grid-template-columns:1fr auto;align-items:center;padding:24px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#fff 0%,#fafbff 100%)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:52px;height:52px;border-radius:8px;object-fit:contain;box-shadow:0 2px 8px rgba(2,8,20,.1)}
+    h1{margin:0;font:700 22px/1.25 Inter}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:14px}
+    .meta{text-align:right;color:var(--muted);font-size:13px}
+    .content{padding:24px 28px 36px}
+    h2.section{font:600 15px/1.2 Inter;color:var(--primary);text-transform:uppercase;letter-spacing:.3px;margin:22px 0 10px}
+    h3{font:600 17px/1.35 Inter;margin:18px 0 8px}
+    .block{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0}
+    ul,ol{margin:8px 0 8px 20px}
+    li{margin:6px 0}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef6ff;color:#0b62d6;border:1px solid #d7e8ff}
+    .table{width:100%;border-collapse:collapse;font-size:15px}
+    .table th,.table td{border:1px solid var(--border);padding:10px 12px;vertical-align:top}
+    .table th{background:#f6f8fb;text-align:left;color:#2b3a4a;font-weight:600}
+    .lead{color:var(--muted)}
+    .cta{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
+    .btn{appearance:none;border:1px solid #cfe1ff;border-radius:10px;padding:10px 14px;font-weight:700;font-size:14px;cursor:pointer;background:linear-gradient(180deg,var(--primary),#1565c0);color:#fff;box-shadow:0 6px 14px rgba(21,101,192,.22)}
+    .btn-outline{background:#fff;color:var(--primary)}
+    .foot{padding:16px 28px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:12px}
+    /* Subtle definitions block */
+    .note{background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;color:#475569;margin:10px 0}
+    .defs{margin:6px 0}
+    .defs dt{font-weight:600;color:#334155;margin-top:6px}
+    .defs dd{margin:2px 0 6px 0;color:#475569}
+    @media (max-width:760px){.header{grid-template-columns:1fr}.meta{text-align:left}.page{margin:16px}.grid-2{grid-template-columns:1fr}}
+    @page{size:A4; margin:28mm 14mm 20mm}
+    @media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact} html,body{background:#fff;font-size:12pt} .page{box-shadow:none;border:none;margin:0;overflow:visible} .content{padding:0} .header{padding:0 0 6pt 0;border-bottom:0} .foot{border-top:0;padding:6pt 0 0 0} .cta,.btn{display:none!important} h2.section,h3{page-break-after:avoid} .block{page-break-inside:avoid;margin:8pt 0;padding:12pt} .table{font-size:11pt} .table th,.table td{padding:8pt 9pt} }
+    /* Print enhancements */
+    .print-only{display:none}
+    @media print{
+      body{padding-top:0;padding-bottom:0}
+      .page{overflow:visible}
+      .p-header{position:static;left:auto;right:auto;color:#64748b;font-size:10pt;background:#fff;border-bottom:1px solid #e5e7eb;padding:6pt 0;margin:0 14mm 6pt}
+      .p-footer{position:fixed;left:0;right:0;color:#64748b;font-size:10pt;background:#fff}
+      .p-footer{bottom:0;border-top:1px solid #e5e7eb;padding:6pt 0}
+      .p-wrap{margin:0 14mm;display:flex;align-items:center;justify-content:space-between}
+      .p-page:after{content:"Página " counter(page)}
+      #section-investment{break-before:page}
+      /* Ensure tables and rows don't split awkwardly */
+      .table tr{break-inside:avoid;page-break-inside:avoid}
+      /* Keep titles with their content */
+      h2.section{margin-top:12pt;padding-top:0;break-inside:avoid;break-after:avoid-page}
+      h2.section + .block{break-before:avoid-page}
+      .print-only{display:block}
+      .note{background:#fff;border-color:#e2e8f0;color:#334155}
+      .defs dd{color:#475569}
+    }
+  </style>
+</head>
+<body>
+  <!-- Print header/footer -->
+  <!-- <div class="p-header print-only">
+    <div class="p-wrap">
+      <div style="display:flex;align-items:center;gap:8pt">
+        <img src="logcho.png" alt="The Unknown Shopper" onerror="this.onerror=null;this.src='../logcho.png'" style="width:18pt;height:18pt;object-fit:contain;border-radius:3pt" />
+        <strong style="color:#0f172a">The Unknown Shopper — Propuesta Consultorios Clínicos</strong>
+      </div>
+      <div class="p-page"></div>
+    </div>
+  </div> -->
+  <div class="p-footer print-only">
+    <div class="p-wrap"><div>The Unknown Shopper</div></div>
+  </div>
+  <div class="page">
+    <header class="header">
+      <div class="brand">
+        <img class="logo" src="logcho.png" alt="The Unknown Shopper" onerror="this.onerror=null;this.src='../logcho.png'" />
+        <div>
+          <h1>Propuesta Final — Consultorios Clínicos</h1>
+          <div class="sub">Estudio de Mercado — Villahermosa, Tabasco</div>
+        </div>
+      </div>
+      <div class="meta">
+        <div><strong>Fecha:</strong> <span id="doc-date">...</span></div>
+        <div><strong>Cliente:</strong> Consultorios Clínicos</div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="block">
+        <h3 style="margin-top:0">Resumen de la oferta (ajustada)</h3>
+        <ul>
+          <li><strong>Qué ofrecemos:</strong> estudio de mercado para servicios clínicos ambulatorios con <strong>encuestas a pacientes n=250</strong>.</li>
+          <li><strong>Qué entregamos:</strong> <strong>sistema web</strong> con <strong>dashboard clínico</strong>, gráficas y tabulados interactivos, módulo de <strong>unidad económica</strong> y vistas por especialidad, con captura y almacenamiento en <strong>Firestore</strong>.</li>
+          <li><strong>Inversión total:</strong> <strong>$50,000 MXN + IVA</strong> (incluye base + n=250 encuestas). Detalle en la sección de inversión.</li>
+        </ul>
+      </section>
+
+      <h2 class="section">1) Objetivo</h2>
+      <section class="block">
+        <p>Evaluar la viabilidad comercial, operativa y financiera del ingreso/expansión de <strong>Consultorios Clínicos</strong> en Villahermosa, con análisis de demanda, competencia, segmentos, unidad económica y recomendaciones accionables.</p>
+      </section>
+
+      <h2 class="section">2) Alcance</h2>
+      <section class="block">
+        <div class="grid-2">
+          <ul>
+            <li><strong>Cobertura:</strong> Villahermosa y área metropolitana.</li>
+            <li><strong>Portafolio:</strong> servicios clínicos ambulatorios: <em>consulta general y de especialidad</em>, laboratorio, diagnóstico básico (p. ej. rayos X/ultrasonido) y servicios complementarios.</li>
+          </ul>
+          <ul>
+            <li><strong>Horizonte:</strong> <strong>1 año</strong> con <strong>ramp-up trimestral</strong>.</li>
+            <li><strong>Campo:</strong> entrevistas/visitas técnicas y <strong>encuestas n=250</strong>.</li>
+          </ul>
+        </div>
+        <p class="lead"><span class="tag">Incluye</span> investigación/análisis + trabajo de campo (entrevistas/visitas) + <strong>encuestas n=250</strong>. <span class="tag">Fuera de alcance</span> otros opcionales (mystery adicional, más encuestas) salvo adendum.</p>
+      </section>
+
+      <h2 class="section">3) Metodología</h2>
+      <section class="block">
+        <h3>Desk research</h3>
+        <ul><li>INEGI (población y gasto en salud), CONAPO, ENSANUT/ENIGH, Secretaría de Salud, COFEPRIS/NOMs aplicables, directorios médicos y fuentes sectoriales.</li></ul>
+        <h3>Fieldwork</h3>
+        <ul>
+          <li>Entrevistas semiestructuradas a actores clave: pacientes, médicos tratantes, administradores de clínica y aseguradoras/gestores (si aplica).</li>
+          <li><strong>Encuesta a pacientes (n=250)</strong> presencial/online con control de calidad y <strong>captura en sistema</strong> (formulario web) con <strong>Firestore</strong> como backend.</li>
+        </ul>
+        <h3>Modelado</h3>
+        <ul>
+          <li><strong>Unidad económica</strong> por línea de servicio (consulta, laboratorio, diagnóstico): tarifas, costos directos, utilización, margen y <em>payer mix</em>.</li>
+          <li>Escenarios de demanda y sensibilidad (ocupación, tiempos de espera, ticket promedio).</li>
+        </ul>
+      </section>
+
+      <h2 class="section">4) Entregables</h2>
+      <section class="block">
+        <table class="table" role="table">
+          <thead><tr><th>Entregable (Sistema)</th><th>Descripción</th><th>Acceso</th></tr></thead>
+          <tbody>
+            <tr><td>Dashboard clínico</td><td>KPIs de ocupación, tiempos de espera, NPS paciente, ticket promedio y payer mix</td><td>Web (cuenta/roles)</td></tr>
+            <tr><td>Gráficas y tabulados</td><td>Resultados por especialidad/servicio y zona; filtros y comparativos</td><td>Web (interactivo)</td></tr>
+            <tr><td>Módulo de unidad económica</td><td>Supuestos ajustables y escenarios de costos/ingresos por línea de servicio</td><td>Web (interactivo)</td></tr>
+            <tr><td>Módulo de captura</td><td>Formulario web; datos almacenados en Firestore con control de calidad</td><td>Web (seguro)</td></tr>
+            <tr><td>Usuarios y roles</td><td>Acceso con autenticación; vistas por perfil</td><td>Web (admin/lectura)</td></tr>
+          </tbody>
+        </table>
+        <!-- <div class="note">
+          <h3 style="margin:0 0 6px 0;font-size:14px;color:#0f172a">Definiciones (referencia)</h3>
+          <dl class="defs" style="font-size:14px">
+            <dt>Ocupación</dt>
+            <dd>Porcentaje de capacidad utilizada por día/semana (consultorios, sillones, equipos).</dd>
+            <dt>Tiempos de espera</dt>
+            <dd>Minutos entre llegada y atención efectiva, por servicio/especialidad.</dd>
+            <dt>NPS paciente</dt>
+            <dd>Net Promoter Score: disposición a recomendar el servicio (promotores − detractores).</dd>
+            <dt>Ticket promedio</dt>
+            <dd>Ingreso promedio por paciente/visita; se reporta por servicio y período.</dd>
+            <dt>Payer mix</dt>
+            <dd>Distribución de origen de pago (efectivo, aseguradora, empresa, otros) y su peso en ingresos.</dd>
+            <dt>Unidad económica</dt>
+            <dd>Márgenes y punto de equilibrio por línea de servicio considerando tarifas, costos y utilización.</dd>
+          </dl>
+        </div> -->
+      </section>
+
+      <h2 class="section">5) Cronograma</h2>
+      <section class="block">
+        <p><strong>Duración estimada:</strong> <strong>3 semanas</strong> a partir del anticipo</p>
+        <ol>
+          <li><strong>Semana 1:</strong> Kickoff, desk research, diseño de instrumentos y configuración del sistema (Firestore/formulario).</li>
+          <li><strong>Semana 2:</strong> Trabajo de campo (entrevistas y <strong>encuestas n=250</strong>) y consolidación de datos en el sistema.</li>
+          <li><strong>Semana 3:</strong> Modelo de unidad económica, análisis, tabulados y gráficas; borrador y entrega final (+ presentación).</li>
+        </ol>
+      </section>
+
+      <h2 id="section-investment" class="section">6) Inversión (ajustada)</h2>
+      <section class="block">
+        <table class="table">
+          <thead><tr><th>Concepto</th><th>Tipo</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>Cuota fija del proyecto (incluye servicios base + encuestas n=250 + viáticos)</td><td><span class="tag">Incluye</span></td><td>$50,000 MXN</td></tr>
+            <tr><th colspan="2">Total del proyecto</th><th>$50,000 MXN + IVA</th></tr>
+          </tbody>
+        </table>
+        <p class="lead"><strong>Facturación:</strong> 40% anticipo, 40% contra borrador, 20% contra entrega final (opción 1); o 50% anticipo, 50% contra entrega final (opción 2).</p>
+        <p class="lead">Notas: el alcance refleja <strong>servicios base + encuestas n=250</strong> y entrega mediante <strong>sistema web</strong> (Firestore). Ajustes (más encuestas u otros opcionales) se cotizan vía adendum.</p>
+      </section>
+
+      <h2 class="section">7) Términos y Condiciones</h2>
+      <section class="block">
+        <ul>
+          <li>Validez de la propuesta: 30 días naturales a partir de la fecha.</li>
+          <li>Confidencialidad: NDA bilateral; uso exclusivo para este proyecto.</li>
+          <li>Propiedad intelectual: entregables finales para Consultorios Clínicos; metodologías genéricas de The Unknown Shopper.</li>
+          <li>Cambios de alcance: modificaciones sustanciales se formalizan por adendum.</li>
+          <li>Privacidad de datos: cumplimiento con la LFPDPPP; consentimiento informado, anonimización y resguardo seguro.</li>
+        </ul>
+      </section>
+
+      <h2 class="section">8) Aceptación</h2>
+      <section class="block">
+        <p>Para proceder, agradeceremos la confirmación de aceptación del alcance ajustado, cronograma, términos y esquema de inversión.</p>
+        <div class="cta">
+          <button class="btn" onclick="window.print()">Descargar PDF</button>
+        </div>
+        <div class="print-only" style="margin-top:14pt">
+          <h3>Firmas de aceptación</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24pt;margin-top:12pt">
+            <div>
+              <div style="height:48pt;border-bottom:1px solid #94a3b8"></div>
+              <div style="font-size:10pt;color:#64748b;margin-top:4pt">Consultorios Clínicos — Nombre y cargo</div>
+              <div style="font-size:10pt;color:#64748b">Fecha: ____ / ____ / ______</div>
+            </div>
+            <div>
+              <div style="height:48pt;border-bottom:1px solid #94a3b8"></div>
+              <div style="font-size:10pt;color:#64748b;margin-top:4pt">The Unknown Shopper — Representante</div>
+              <div style="font-size:10pt;color:#64748b">Fecha: ____ / ____ / ______</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div>Propuesta Final • The Unknown Shopper</div>
+      <div id="doc-generated">Documento generado el --/--/----</div>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      try{
+        const months=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+        const d=new Date();
+        const dd=String(d.getDate()).padStart(2,'0');
+        const mm=String(d.getMonth()+1).padStart(2,'0');
+        const yyyy=d.getFullYear();
+        const long=`${dd} de ${months[d.getMonth()]} de ${yyyy}`;
+        const short=`${dd}/${mm}/${yyyy}`;
+        const el=document.getElementById('doc-date'); if(el) el.textContent=long;
+        const gen=document.getElementById('doc-generated'); if(gen) gen.textContent=`Documento generado el ${short}`;
+        window.addEventListener('beforeprint',()=>{
+          const d2=new Date();
+          const dd2=String(d2.getDate()).padStart(2,'0');
+          const mm2=String(d2.getMonth()+1).padStart(2,'0');
+          const yyyy2=d2.getFullYear();
+          const short2=`${dd2}/${mm2}/${yyyy2}`;
+          const gen2=document.getElementById('doc-generated'); if(gen2) gen2.textContent=`Documento generado el ${short2}`;
+          const pdate=document.getElementById('print-date'); if(pdate) pdate.textContent=short2;
+        });
+      }catch(e){}
+    })();
+  </script>
+</body>
+</html>

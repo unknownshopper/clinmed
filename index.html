@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consultorios Clínicos — Sistema</title>
+  <link rel="icon" href="logch.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="script.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <img class="logo" src="logch.png" alt="The Unknown Shopper" />
+        <div>
+          <h1>Consultorios Clínicos — Sistema</h1>
+          <div class="sub">Login y Dashboard por rol</div>
+        </div>
+      </div>
+      <div class="session">
+        <span id="user-email" class="muted"></span>
+        <button id="btn-logout" class="btn btn-outline" style="display:none">Salir</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <!-- Vista: Auth -->
+      <section id="view-auth" class="card">
+        <h2>Acceso</h2>
+        <form id="form-auth">
+          <label>
+            <span>Email</span>
+            <input type="email" id="auth-email" required placeholder="correo@dominio.com" />
+          </label>
+          <label>
+            <span>Contraseña</span>
+            <input type="password" id="auth-password" required placeholder="********" />
+          </label>
+          <div class="row">
+            <button id="btn-login" class="btn" type="submit">Ingresar</button>
+            <button id="btn-signup" class="btn btn-outline" type="button">Crear cuenta</button>
+          </div>
+          <p class="muted" style="margin-top:8px">Tras crear cuenta, un admin deberá asignar tu rol.</p>
+        </form>
+      </section>
+
+      <!-- Vista: Dashboard (role-based) -->
+      <section id="view-dashboard" class="card" style="display:none">
+        <div class="tabs">
+          <button data-tab="encuestador" class="tab active">Encuestador</button>
+          <button data-tab="supervisor" class="tab">Supervisor</button>
+          <button data-tab="admin" class="tab">Admin</button>
+        </div>
+
+        <div id="view-encuestador" class="tab-panel">
+          <h2>Captura de encuestas</h2>
+          <p class="muted">Máximo total: 250 encuestas.</p>
+          <div class="row">
+            <button id="btn-new-survey" class="btn">Nueva encuesta</button>
+            <span id="counter" class="tag">0 / 250</span>
+          </div>
+          <div id="surveys-list" class="list"></div>
+        </div>
+
+        <div id="view-supervisor" class="tab-panel" style="display:none">
+          <h2>Revisión y aprobación</h2>
+          <div id="queue-list" class="list"></div>
+        </div>
+
+        <div id="view-admin" class="tab-panel" style="display:none">
+          <h2>Administración</h2>
+          <div class="grid-2">
+            <div class="card subcard">
+              <h3>Usuarios y roles</h3>
+              <form id="form-assign-role" class="row">
+                <input type="email" id="role-email" placeholder="email del usuario" required />
+                <select id="role-select">
+                  <option value="encuestador">encuestador</option>
+                  <option value="supervisor">supervisor</option>
+                  <option value="admin">admin</option>
+                </select>
+                <button class="btn" type="submit">Asignar rol</button>
+              </form>
+              <div id="users-list" class="list"></div>
+            </div>
+            <div class="card subcard">
+              <h3>Analytics</h3>
+              <div id="analytics" class="list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-foot">
+      <div>Consultorios Clínicos — Sistema</div>
+      <div id="doc-generated"></div>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nueva encuesta — Consultorios Clínicos</title>
+  <link rel="icon" href="logch.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="encuesta.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <img class="logo" src="logch.png" alt="The Unknown Shopper" />
+        <div>
+          <h1>Nueva encuesta</h1>
+          <div class="sub">Captura de paciente</div>
+        </div>
+      </div>
+      <div class="session">
+        <span id="user-email" class="muted"></span>
+        <button id="btn-cancel" class="btn btn-outline">Cancelar</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="card">
+        <form id="form-encuesta" class="form">
+          <h2>Datos del paciente</h2>
+          <div class="grid-2">
+            <label>
+              <span>Edad</span>
+              <input type="number" id="age" min="0" max="120" required placeholder="Ej. 35" />
+            </label>
+            <label>
+              <span>Género</span>
+              <select id="gender" required>
+                <option value="">Selecciona…</option>
+                <option>Femenino</option>
+                <option>Masculino</option>
+                <option>Otro</option>
+                <option>Prefiere no decir</option>
+              </select>
+            </label>
+          </div>
+
+          <h2>Servicio</h2>
+          <div class="grid-2">
+            <label>
+              <span>Tipo de servicio</span>
+              <select id="service_type" required>
+                <option value="">Selecciona…</option>
+                <option>Consulta general</option>
+                <option>Consulta especialidad</option>
+                <option>Laboratorio</option>
+                <option>Diagnóstico (Rayos X / US)</option>
+                <option>Otro</option>
+              </select>
+            </label>
+            <label>
+              <span>Tiempo de espera (min)</span>
+              <input type="number" id="wait_time" min="0" max="600" required placeholder="Ej. 25" />
+            </label>
+          </div>
+
+          <h2>Experiencia</h2>
+          <div class="grid-2">
+            <label>
+              <span>Satisfacción (1–5)</span>
+              <select id="satisfaction" required>
+                <option value="">Selecciona…</option>
+                <option value="1">1 — Muy mala</option>
+                <option value="2">2 — Mala</option>
+                <option value="3">3 — Regular</option>
+                <option value="4">4 — Buena</option>
+                <option value="5">5 — Excelente</option>
+              </select>
+            </label>
+            <label>
+              <span>¿Recomendaría? (NPS)</span>
+              <select id="nps" required>
+                <option value="">Selecciona…</option>
+                <option value="0">0 — Nada probable</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10 — Muy probable</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>Comentarios</span>
+            <input type="text" id="comments" placeholder="Opcional" />
+          </label>
+
+          <label class="row">
+            <input type="checkbox" id="consent" required />
+            <span>Confirmo consentimiento informado y uso anónimo de datos.</span>
+          </label>
+
+          <div class="row" style="margin-top:12px">
+            <button id="btn-save" class="btn" type="submit">Guardar</button>
+            <button id="btn-save-submit" class="btn btn-outline" type="button" title="Guardar y enviar a revisión">Guardar y enviar</button>
+          </div>
+
+          <div id="msg" class="muted" style="margin-top:8px"></div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="app-foot">
+      <div>Consultorios Clínicos — Captura</div>
+      <div></div>
+    </footer>
+  </div>
+</body>
+</html>

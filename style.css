@@ -1,0 +1,34 @@
+:root{--bg:#f7f7f9;--paper:#fff;--ink:#0f172a;--muted:#64748b;--primary:#1e88e5;--border:#e5e7eb}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+.app{max-width:1000px;margin:28px auto;background:var(--paper);border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 30px rgba(10,31,68,.08);overflow:hidden}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:40px;height:40px;border-radius:8px;object-fit:contain}
+.sub{color:var(--muted);font-size:14px}
+.session{display:flex;align-items:center;gap:10px}
+.app-main{padding:20px}
+.app-foot{padding:14px 20px;border-top:1px solid var(--border);color:var(--muted);display:flex;justify-content:space-between}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin:10px 0}
+.subcard{border-style:dashed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+label{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+input,select{appearance:none;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:15px}
+
+.btn{appearance:none;border:1px solid #cfe1ff;border-radius:10px;padding:10px 14px;font-weight:700;font-size:14px;cursor:pointer;background:linear-gradient(180deg,var(--primary),#1565c0);color:#fff;box-shadow:0 6px 14px rgba(21,101,192,.22)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-outline{background:#fff;color:var(--primary)}
+
+.tabs{display:flex;gap:8px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.tab{appearance:none;border:1px solid var(--border);background:#f6f8fb;border-bottom:none;border-top-left-radius:8px;border-top-right-radius:8px;padding:8px 12px;cursor:pointer}
+.tab.active{background:#fff;color:var(--primary);border-color:#c6d0e0}
+.tab-panel{padding:4px 2px}
+
+.list{display:grid;gap:8px}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef6ff;color:#0b62d6;border:1px solid #d7e8ff}
+.muted{color:var(--muted)}
+
+@media (max-width:760px){.app{margin:12px}.grid-2{grid-template-columns:1fr}}
