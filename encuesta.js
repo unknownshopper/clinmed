@@ -133,8 +133,10 @@ function serializePayload() {
     surveyor_id: (fields.surveyor_id.value || "").trim(),
     age: Number(fields.age.value),
     gender: getRadioValue(fields.gender),
+    gender_other: document.getElementById("gender_other")?.value || "",
     education: getRadioValue(fields.education),
     occupation: getRadioValue(fields.occupation),
+    occupation_other: document.getElementById("occupation_other")?.value || "",
     neighborhood: (fields.neighborhood.value || "").trim(),
     has_children: getRadioValue(fields.has_children),
     num_children: getRadioValue(fields.has_children) === "yes" ? Number(fields.num_children.value) || null : null,
@@ -146,11 +148,15 @@ function serializePayload() {
     child_satisfaction: getRadioValue(fields.has_children) === "yes" ? fields.child_satisfaction.value : null,
     last_personal_visit: fields.last_personal_visit.value,
     insurance: getRadioValue(fields.insurance),
+    insurance_other: document.getElementById("insurance_other")?.value || "",
     main_provider: fields.main_provider.value,
-    service_type: getCheckboxValues(fields.service_type), // Array de valores
+    main_provider_other: document.getElementById("main_provider_other")?.value || "",
+    service_type: getCheckboxValues(fields.service_type),
+    service_type_other: document.getElementById("service_type_other")?.value || "",
     wait_time: Number(fields.wait_time.value),
     first_visit: getRadioValue(fields.first_visit),
     reason_choice: getRadioValue(fields.reason_choice),
+    reason_choice_other: document.getElementById("reason_choice_other")?.value || "",
     quality: Number(getRadioValue(fields.quality)),
     staff_treatment: Number(getRadioValue(fields.staff_treatment)),
     cleanliness: Number(getRadioValue(fields.cleanliness)),
@@ -160,6 +166,7 @@ function serializePayload() {
     vs_public: getRadioValue(fields.vs_public),
     vs_pharmacy: getRadioValue(fields.vs_pharmacy),
     desired_service: fields.desired_service.value || "",
+    desired_service_other: document.getElementById("desired_service_other")?.value || "",
     comments: (fields.comments.value || "").trim(),
   };
 }
@@ -266,16 +273,67 @@ async function getGeo() {
     if ("wait_time" in payload) fields.wait_time.value = payload.wait_time ?? "";
     if ("first_visit" in payload) setRadioValue(fields.first_visit, payload.first_visit);
     if ("reason_choice" in payload) setRadioValue(fields.reason_choice, payload.reason_choice);
-    if ("quality" in payload) setRadioValue(fields.quality, payload.quality);
-    if ("staff_treatment" in payload) setRadioValue(fields.staff_treatment, payload.staff_treatment);
-    if ("cleanliness" in payload) setRadioValue(fields.cleanliness, payload.cleanliness);
-    if ("value_for_money" in payload) setRadioValue(fields.value_for_money, payload.value_for_money);
-    if ("satisfaction" in payload) setRadioValue(fields.satisfaction, payload.satisfaction);
-    if ("nps" in payload) setRadioValue(fields.nps, payload.nps);
+    if ("quality" in payload) setRadioValue(fields.quality, String(payload.quality));
+    if ("staff_treatment" in payload) setRadioValue(fields.staff_treatment, String(payload.staff_treatment));
+    if ("cleanliness" in payload) setRadioValue(fields.cleanliness, String(payload.cleanliness));
+    if ("value_for_money" in payload) setRadioValue(fields.value_for_money, String(payload.value_for_money));
+    if ("satisfaction" in payload) setRadioValue(fields.satisfaction, String(payload.satisfaction));
+    if ("nps" in payload) setRadioValue(fields.nps, String(payload.nps));
     if ("vs_public" in payload) setRadioValue(fields.vs_public, payload.vs_public);
     if ("vs_pharmacy" in payload) setRadioValue(fields.vs_pharmacy, payload.vs_pharmacy);
     if ("desired_service" in payload) fields.desired_service.value = payload.desired_service ?? "";
     if ("comments" in payload) fields.comments.value = payload.comments ?? "";
+    
+    // Cargar campos "Otro" si existen
+    if ("gender_other" in payload && payload.gender_other) {
+      const genderOther = document.getElementById("gender_other");
+      if (genderOther) {
+        genderOther.value = payload.gender_other;
+        genderOther.classList.add("show");
+      }
+    }
+    if ("occupation_other" in payload && payload.occupation_other) {
+      const occupationOther = document.getElementById("occupation_other");
+      if (occupationOther) {
+        occupationOther.value = payload.occupation_other;
+        occupationOther.classList.add("show");
+      }
+    }
+    if ("insurance_other" in payload && payload.insurance_other) {
+      const insuranceOther = document.getElementById("insurance_other");
+      if (insuranceOther) {
+        insuranceOther.value = payload.insurance_other;
+        insuranceOther.classList.add("show");
+      }
+    }
+    if ("main_provider_other" in payload && payload.main_provider_other) {
+      const mainProviderOther = document.getElementById("main_provider_other");
+      if (mainProviderOther) {
+        mainProviderOther.value = payload.main_provider_other;
+        mainProviderOther.classList.add("show");
+      }
+    }
+    if ("service_type_other" in payload && payload.service_type_other) {
+      const serviceTypeOther = document.getElementById("service_type_other");
+      if (serviceTypeOther) {
+        serviceTypeOther.value = payload.service_type_other;
+        serviceTypeOther.classList.add("show");
+      }
+    }
+    if ("reason_choice_other" in payload && payload.reason_choice_other) {
+      const reasonOther = document.getElementById("reason_choice_other");
+      if (reasonOther) {
+        reasonOther.value = payload.reason_choice_other;
+        reasonOther.classList.add("show");
+      }
+    }
+    if ("desired_service_other" in payload && payload.desired_service_other) {
+      const desiredServiceOther = document.getElementById("desired_service_other");
+      if (desiredServiceOther) {
+        desiredServiceOther.value = payload.desired_service_other;
+        desiredServiceOther.classList.add("show");
+      }
+    }
     
     // Mostrar sección de hijos si tiene hijos
     if (payload.has_children === "yes") {
@@ -298,89 +356,132 @@ async function getGeo() {
       setMessage("Encuesta no encontrada", true);
       return true;
     }
+    
     const data = snap.data();
     fillFormFromPayload(data.payload || {});
+    
+    // Siempre deshabilitar formulario al cargar
     setFormDisabled(true);
-    // Ocultar acciones de guardado
+    
+    // Ocultar botones de guardado
     btnSave?.classList.add("hidden");
-    btnSaveSubmit?.classList.add("hidden");
+    btnClear?.classList.add("hidden");
     
-    // Mostrar metadata (fecha y link a mapa)
-    const createdAt = data.created_at?.toDate ? data.created_at.toDate().toLocaleString() : "";
-    let metaHtml = `Creada: ${createdAt} · Estado: ${data.status || "-"}`;
-    if (data.location?.lat && data.location?.lng) {
-      const { lat, lng, accuracy } = data.location;
-      const gmaps = `https://www.google.com/maps?q=${lat},${lng}`;
-      metaHtml += ` · Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}${accuracy ? ` (~${Math.round(accuracy)}m)` : ""} · <a href="${gmaps}" target="_blank" rel="noopener">Abrir mapa</a>`;
+    // Mostrar metadatos
+    const metadataContainer = document.getElementById("survey-metadata");
+    const metadataContent = document.getElementById("metadata-content");
+    
+    if (metadataContainer && metadataContent) {
+      metadataContainer.style.display = "block";
+      
+      // Formatear fecha
+      const createdAt = data.created_at?.toDate ? 
+        data.created_at.toDate().toLocaleString('es-MX', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }) : "Sin fecha";
+      
+      // Construir HTML de metadatos
+      let metaHtml = `
+        <div style="display:grid; gap:8px;">
+          <div><strong>👤 Encuestador:</strong> ${data.payload?.surveyor_id || "Desconocido"}</div>
+          <div><strong>📅 Fecha y hora:</strong> ${createdAt}</div>
+          <div><strong>📊 Estado:</strong> <span style="background:#dbeafe; padding:2px 8px; border-radius:4px;">${data.status || 'submitted'}</span></div>
+      `;
+      
+      // Agregar ubicación si existe
+      if (data.location?.lat && data.location?.lng) {
+        const { lat, lng, accuracy } = data.location;
+        const gmapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+        const coords = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        metaHtml += `
+          <div>
+            <strong>📍 Ubicación:</strong> 
+            <a href="${gmapsUrl}" target="_blank" rel="noopener" style="color:#1e88e5; text-decoration:none;">
+              ${coords}${accuracy ? ` (~${Math.round(accuracy)}m de precisión)` : ''}
+            </a>
+          </div>
+        `;
+      } else {
+        metaHtml += `<div><strong>📍 Ubicación:</strong> No disponible</div>`;
+      }
+      
+      metaHtml += `</div>`;
+      metadataContent.innerHTML = metaHtml;
     }
-    const meta = document.getElementById("meta");
-    if (meta) meta.innerHTML = metaHtml;
     
-    setMessage("Modo lectura");
+    // Mostrar mensaje según rol
+    const role = await getMyRole();
+    if (role === "admin") {
+      setMessage("📖 Modo lectura - Puedes editar esta encuesta usando el hash #edit en la URL");
+    } else {
+      setMessage("📖 Modo solo lectura");
+    }
+    
     return true;
   }
 
- 
 
-// Acciones: ver imagen (todos), editar (supervisor/admin), eliminar (admin)
-if (actions) {
-  actions.style.display = "flex"; // mostrar barra
-  // Ver imagen
-  btnViewImg?.addEventListener("click", async () => {
-    try {
-      const canvas = await html2canvas(captureArea, { scale: 2 });
-      const url = canvas.toDataURL("image/png");
-      // abrir en pestaña nueva (ligero para móvil)
-      const w = window.open();
-      w.document.write(`<img src="${url}" style="max-width:100%"/>`);
-    } catch (_) {
-      setMessage("No se pudo generar imagen", true);
-    }
-  });
 
-  // Editar (supervisor/admin)
-  if (["supervisor","admin"].includes(currentRole)) {
-    btnEdit?.classList.remove("hidden");
-    btnEdit?.addEventListener("click", async () => {
-      setFormDisabled(false);
-      setMessage("Modo edición. Guarda con el botón de abajo.");
-      // Reusar el submit existente para guardar edición:
-      form.onsubmit = async (e) => {
-        e.preventDefault();
-        try {
-          validateForm();
-          const newPayload = serializePayload();
-          await updateDoc(doc(db, "surveys", id), {
-            payload: newPayload,
-            updated_at: serverTimestamp()
-          });
-          setMessage("Encuesta actualizada.");
-          setFormDisabled(true);
-        } catch (err) {
-          setMessage(err.message || "No se pudo actualizar", true);
-        }
-      };
-    });
-  } else {
-    btnEdit?.classList.add("hidden");
-  }
+// Acciones: editar (solo admin)
+// Esta lógica solo se ejecuta si hay un ID de encuesta en la URL
+const urlParams = new URLSearchParams(location.search);
+const surveyId = urlParams.get("id");
 
-  // Eliminar (admin)
-  if (currentRole === "admin") {
-    btnDelete?.classList.remove("hidden");
-    btnDelete?.addEventListener("click", async () => {
-      const ok = confirm("¿Eliminar esta encuesta de forma permanente?");
-      if (!ok) return;
-      try {
-        await deleteDoc(doc(db, "surveys", id));
-        window.location.href = "index.html";
-      } catch (err) {
-        setMessage("No se pudo eliminar", true);
+if (surveyId) {
+  // Solo admin puede editar encuestas existentes
+  async function setupEditMode() {
+    const role = await getMyRole();
+    
+    if (role === "admin") {
+      // Crear botón de editar si no existe
+      let btnEdit = document.getElementById("btn-edit");
+      if (!btnEdit) {
+        btnEdit = document.createElement("button");
+        btnEdit.id = "btn-edit";
+        btnEdit.className = "btn";
+        btnEdit.textContent = "✏️ Editar";
+        btnEdit.style.marginLeft = "10px";
+        btnCancel?.parentElement?.insertBefore(btnEdit, btnCancel.nextSibling);
       }
-    });
-  } else {
-    btnDelete?.classList.add("hidden");
+      
+      btnEdit.addEventListener("click", async () => {
+        setFormDisabled(false);
+        btnSave?.classList.remove("hidden");
+        btnClear?.classList.remove("hidden");
+        setMessage("✏️ Modo edición activado. Guarda los cambios cuando termines.");
+        
+        // Reusar el submit existente para guardar edición
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          try {
+            validateForm();
+            const newPayload = serializePayload();
+            await updateDoc(doc(db, "surveys", surveyId), {
+              payload: newPayload,
+              updated_at: serverTimestamp()
+            });
+            setMessage("✅ Encuesta actualizada exitosamente.");
+            setFormDisabled(true);
+            btnSave?.classList.add("hidden");
+            btnClear?.classList.add("hidden");
+            
+            // Recargar para mostrar cambios
+            setTimeout(() => location.reload(), 1500);
+          } catch (err) {
+            setMessage("❌ " + (err.message || "No se pudo actualizar"), true);
+          }
+        };
+      });
+    }
   }
+  
+  // Ejecutar después de cargar el usuario
+  setTimeout(setupEditMode, 500);
 }
 
 
@@ -445,7 +546,103 @@ function bindEvents() {
       }
     });
   });
-} 
+  
+  // Configurar campos "Otro"
+  setupOtherFields();
+}
+ 
+
+
+// Manejar campos "Otro" dinámicos
+function setupOtherFields() {
+  // Género
+  const genderRadios = document.getElementsByName("gender");
+  const genderOther = document.getElementById("gender_other");
+  genderRadios.forEach(radio => {
+    radio.addEventListener("change", () => {
+      if (radio.value === "Otro" && radio.checked) {
+        genderOther?.classList.add("show");
+      } else if (radio.checked) {
+        genderOther?.classList.remove("show");
+      }
+    });
+  });
+
+  // Ocupación
+  const occupationRadios = document.getElementsByName("occupation");
+  const occupationOther = document.getElementById("occupation_other");
+  occupationRadios.forEach(radio => {
+    radio.addEventListener("change", () => {
+      if (radio.value === "Otro" && radio.checked) {
+        occupationOther?.classList.add("show");
+      } else if (radio.checked) {
+        occupationOther?.classList.remove("show");
+      }
+    });
+  });
+
+  // Seguro médico
+  const insuranceRadios = document.getElementsByName("insurance");
+  const insuranceOther = document.getElementById("insurance_other");
+  insuranceRadios.forEach(radio => {
+    radio.addEventListener("change", () => {
+      if (radio.value === "Otro" && radio.checked) {
+        insuranceOther?.classList.add("show");
+      } else if (radio.checked) {
+        insuranceOther?.classList.remove("show");
+      }
+    });
+  });
+
+  // Proveedor principal
+  const mainProvider = document.getElementById("main_provider");
+  const mainProviderOther = document.getElementById("main_provider_other");
+  mainProvider?.addEventListener("change", () => {
+    if (mainProvider.value === "Otro") {
+      mainProviderOther?.classList.add("show");
+    } else {
+      mainProviderOther?.classList.remove("show");
+    }
+  });
+
+  // Tipo de servicio (checkbox)
+  const serviceTypeCheckboxes = document.getElementsByName("service_type");
+  const serviceTypeOther = document.getElementById("service_type_other");
+  serviceTypeCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", () => {
+      const otroChecked = Array.from(serviceTypeCheckboxes).some(cb => cb.value === "Otro" && cb.checked);
+      if (otroChecked) {
+        serviceTypeOther?.classList.add("show");
+      } else {
+        serviceTypeOther?.classList.remove("show");
+      }
+    });
+  });
+
+  // Razón de elección
+  const reasonRadios = document.getElementsByName("reason_choice");
+  const reasonOther = document.getElementById("reason_choice_other");
+  reasonRadios.forEach(radio => {
+    radio.addEventListener("change", () => {
+      if (radio.value === "Otro" && radio.checked) {
+        reasonOther?.classList.add("show");
+      } else if (radio.checked) {
+        reasonOther?.classList.remove("show");
+      }
+    });
+  });
+
+  // Servicio deseado
+  const desiredService = document.getElementById("desired_service");
+  const desiredServiceOther = document.getElementById("desired_service_other");
+  desiredService?.addEventListener("change", () => {
+    if (desiredService.value === "Otro") {
+      desiredServiceOther?.classList.add("show");
+    } else {
+      desiredServiceOther?.classList.remove("show");
+    }
+  });
+}
 
 function boot() {
   bindEvents();
@@ -466,7 +663,7 @@ function boot() {
     currentRole = await getMyRole();
     await maybeLoadReadOnlySurvey();
     const paramsHash = location.hash;
-    if (paramsHash === "#edit" && ["supervisor","admin"].includes(currentRole)) {
+    if (paramsHash === "#edit" && currentRole === "admin") {
       document.getElementById("btn-edit")?.click();
     }
   });

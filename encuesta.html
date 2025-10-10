@@ -255,6 +255,13 @@
       <section id="capture-area" class="card">
         <!-- Mensaje de estado -->
         <div id="msg"></div>
+
+                
+        <!-- Metadatos de la encuesta (solo visible al ver) -->
+        <div id="survey-metadata" style="display:none; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:16px; margin-bottom:16px;">
+          <h3 style="margin:0 0 12px 0; font-size:16px; color:#0c4a6e;">📋 Información de la encuesta</h3>
+          <div id="metadata-content" style="font-size:14px; color:#0c4a6e; line-height:1.8;"></div>
+        </div>
         
         <form id="form-encuesta" class="form">
           <h2>Identificación</h2>
@@ -287,6 +294,7 @@
                 </label>
               </div>
             </div>
+            <input type="text" id="gender_other" class="other-input" placeholder="Especifique..." />
           </div>
 
           <div>
@@ -338,6 +346,7 @@
                 <input type="radio" name="occupation" value="Otro" required /> Otro
               </label>
             </div>
+            <input type="text" id="occupation_other" class="other-input" placeholder="Especifique ocupación..." />
           </div>
 
           <label>
@@ -369,6 +378,7 @@
                 <input type="radio" name="insurance" value="Otro" required /> Otro
               </label>
             </div>
+            <input type="text" id="insurance_other" class="other-input" placeholder="Especifique tipo de seguro..." />
           </div>
 
           <label>
@@ -383,6 +393,7 @@
               <option>No he acudido</option>
               <option>Otro</option>
             </select>
+            <input type="text" id="main_provider_other" class="other-input" placeholder="Especifique..." style="margin-left: 0;" />
           </label>
 
           <h2>Información familiar</h2>
@@ -522,6 +533,7 @@
                 <input type="checkbox" name="service_type" value="Otro" /> Otro
               </label>
             </div>
+            <input type="text" id="service_type_other" class="other-input" placeholder="Especifique tipo de servicio..." />
           </div>
 
           <div class="grid-2">
@@ -575,6 +587,7 @@
                 <input type="radio" name="reason_choice" value="Otro" required /> Otro
               </label>
             </div>
+            <input type="text" id="reason_choice_other" class="other-input" placeholder="Especifique razón..." />
           </div>
 
           <div>
@@ -715,6 +728,7 @@
               <option>Servicio a domicilio</option>
               <option>Otro</option>
             </select>
+            <input type="text" id="desired_service_other" class="other-input" placeholder="Especifique servicio..." style="margin-left: 0;" />
           </label>
 
           <label>

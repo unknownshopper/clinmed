@@ -80,9 +80,37 @@ a.card{ cursor:pointer; }
 .radio-inline input[type="radio"],
 .checkbox-inline input[type="checkbox"] {
   cursor: pointer;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   margin: 0;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+}
+
+/* Asegurar que los checkboxes sean más visibles */
+.checkbox-inline input[type="checkbox"] {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
+}
+
+/* Asegurar que los radio buttons sean más visibles */
+.radio-inline input[type="radio"] {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: radio;
+  -moz-appearance: radio;
 }
 
 .radio-inline input[type="radio"]:checked,
@@ -135,15 +163,37 @@ a.card{ cursor:pointer; }
   color: var(--primary);
   transform: scale(1.1);
 }
+
 .rating-inline input[type="radio"] {
   cursor: pointer;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin: 0;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: radio;
+  -moz-appearance: radio;
 }
 
 .rating-inline input[type="radio"]:checked {
   accent-color: var(--primary);
+}
+
+/* Campos de texto para "Otro" */
+.other-input {
+  margin-top: 8px;
+  margin-left: 26px;
+  width: calc(100% - 26px);
+  max-width: 400px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  display: none;
+}
+
+.other-input.show {
+  display: block;
 }
 
 /* Responsive */
