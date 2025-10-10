@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resultados y Análisis — Consultorios Clínicos</title>
+  <link rel="icon" href="logch.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script type="module" src="resultados.js"></script>
+  <style>
+    /* Estilos específicos para resultados */
+    body {
+      background: #f5f7fa;
+    }
+    
+    .app {
+      max-width: 1600px;
+      margin: 20px auto;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card h3 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0 0 8px 0;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    
+    .chart-container {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .chart-container h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .chart-canvas {
+      max-height: 350px;
+    }
+    
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .bar-label {
+      min-width: 140px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .bar-track {
+      flex: 1;
+      height: 28px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #667eea);
+      border-radius: 6px;
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .table-container {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 500px;
+    }
+    
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    
+    .results-table thead {
+      background: linear-gradient(180deg, #f8f9fa, #e9ecef);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .results-table th {
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--ink);
+      border-bottom: 2px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .results-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .results-table tbody tr:hover {
+      background: #f9fbff;
+    }
+    
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      min-width: 150px;
+    }
+    
+    .date-range {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    
+    .date-input {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .metric-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    
+    .badge-excellent {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .badge-good {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    
+    .badge-average {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    
+    .badge-poor {
+      background: #ffebee;
+      color: #b91c1c;
+    }
+    
+    .insight-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .insight-box h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+    }
+    
+    .insight-box p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+    }
+    
+    .tab {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--muted);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .tab:hover {
+      color: var(--ink);
+      background: #f9fafb;
+    }
+    
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <img class="logo" src="logch.png" alt="Consultorios Clínicos" />
+        <div>
+          <h1>Resultados y Análisis</h1>
+          <div class="sub">Dashboard de métricas y estadísticas</div>
+        </div>
+      </div>
+      <div class="session">
+        <span id="user-email" class="muted"></span>
+        <button id="btn-back" class="btn btn-outline">← Dashboard</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <!-- Barra de herramientas -->
+      <div class="toolbar">
+        <div class="filter-group">
+          <label style="font-size: 13px; font-weight: 500;">Período:</label>
+          <div class="date-range">
+            <input type="date" id="date-from" class="date-input" />
+            <span>—</span>
+            <input type="date" id="date-to" class="date-input" />
+          </div>
+          <select id="filter-encuestador" class="filter-select">
+            <option value="">Todos los encuestadores</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <button id="btn-apply-filters" class="btn">Aplicar filtros</button>
+          <button id="btn-reset-filters" class="btn btn-outline">Restablecer</button>
+          <button id="btn-export-report" class="btn btn-outline">📊 Exportar reporte</button>
+        </div>
+      </div>
+
+      <!-- Insight destacado -->
+      <div id="insight-box" class="insight-box" style="display:none;">
+        <h3>💡 Insight Clave</h3>
+        <p id="insight-text"></p>
+      </div>
+
+      <!-- Tarjetas de estadísticas generales -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>📋 Total Encuestas</h3>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Registradas en el período</div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>✅ Aprobadas</h3>
+          <div class="stat-value" id="stat-approved" style="color: #2e7d32;">0</div>
+          <div class="stat-label">Validadas y aprobadas</div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>⏳ Pendientes</h3>
+          <div class="stat-value" id="stat-submitted" style="color: #1565c0;">0</div>
+          <div class="stat-label">En revisión</div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>📝 Borradores</h3>
+          <div class="stat-value" id="stat-draft" style="color: #e65100;">0</div>
+          <div class="stat-label">En proceso</div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>⭐ NPS Score</h3>
+          <div class="stat-value" id="stat-nps" style="color: var(--primary);">0</div>
+          <div class="stat-label">Net Promoter Score</div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>😊 Satisfacción</h3>
+          <div class="stat-value" id="stat-satisfaction">0</div>
+          <div class="stat-label">Promedio general (1-5)</div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>👶 Con Hijos</h3>
+          <div class="stat-value" id="stat-with-children">0%</div>
+          <div class="stat-label">Pacientes con hijos</div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>🔄 Recurrentes</h3>
+          <div class="stat-value" id="stat-returning">0%</div>
+          <div class="stat-label">Visitas recurrentes</div>
+        </div>
+      </div>
+
+      <!-- Tabs de análisis -->
+      <div class="tabs">
+        <button class="tab active" data-tab="overview">📊 Resumen</button>
+        <button class="tab" data-tab="demographics">👥 Demográficos</button>
+        <button class="tab" data-tab="children">👶 Análisis de Hijos</button>
+        <button class="tab" data-tab="visits">🏥 Visitas y Servicios</button>
+        <button class="tab" data-tab="satisfaction">⭐ Satisfacción</button>
+        <button class="tab" data-tab="comparison">📈 Comparativas</button>
+        <button class="tab" data-tab="ranking">🏆 Ranking</button>
+      </div>
+
+      <!-- Tab: Resumen -->
+      <div id="tab-overview" class="tab-content active">
+        <div class="chart-grid">
+          <div class="chart-container">
+            <h2>📊 Encuestas por Encuestador</h2>
+            <canvas id="chart-by-surveyor" class="chart-canvas"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>📈 Tendencia Temporal</h2>
+            <canvas id="chart-by-date" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h2>🎯 Razones de Elección del Consultorio</h2>
+          <canvas id="chart-reason-choice" class="chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Demográficos -->
+      <div id="tab-demographics" class="tab-content">
+        <div class="chart-grid">
+          <div class="chart-container">
+            <h2>👤 Distribución por Género</h2>
+            <canvas id="chart-gender" class="chart-canvas"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>📚 Nivel de Estudios</h2>
+            <canvas id="chart-education" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-container">
+            <h2>💼 Ocupación</h2>
+            <canvas id="chart-occupation" class="chart-canvas"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>🏥 Seguro Médico</h2>
+            <canvas id="chart-insurance" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h2>📊 Distribución de Edad</h2>
+          <canvas id="chart-age" class="chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Análisis de Hijos -->
+      <div id="tab-children" class="tab-content">
+        <div class="stats-grid" style="margin-bottom: 20px;">
+          <div class="stat-card">
+            <h3>👶 Con Hijos</h3>
+            <div class="stat-value" id="children-stat-total">0</div>
+            <div class="stat-label">Pacientes con hijos</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>👨‍👩‍👧‍👦 Promedio Hijos</h3>
+            <div class="stat-value" id="children-stat-avg">0</div>
+            <div class="stat-label">Hijos por familia</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>😊 Satisfacción Hijos</h3>
+            <div class="stat-value" id="children-stat-satisfaction">0</div>
+            <div class="stat-label">Promedio (1-5)</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>⏱️ Tiempo Espera</h3>
+            <div class="stat-value" id="children-stat-wait">0</div>
+            <div class="stat-label">Minutos promedio</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-container">
+            <h2>🕒 Última Visita con Hijos</h2>
+            <canvas id="chart-child-last-visit" class="chart-canvas"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>🏥 Lugar de Atención para Hijos</h2>
+            <canvas id="chart-child-location" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h2>💰 Costo de Consulta para Hijos</h2>
+          <canvas id="chart-child-cost" class="chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Visitas y Servicios -->
+      <div id="tab-visits" class="tab-content">
+        <div class="stats-grid" style="margin-bottom: 20px;">
+          <div class="stat-card">
+            <h3>🆕 Primera Visita</h3>
+            <div class="stat-value" id="visit-stat-first">0%</div>
+            <div class="stat-label">Pacientes nuevos</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>⏱️ Tiempo Espera</h3>
+            <div class="stat-value" id="visit-stat-wait">0</div>
+            <div class="stat-label">Minutos promedio</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>🕒 Última Visita</h3>
+            <div class="stat-value" id="visit-stat-recent">0%</div>
+            <div class="stat-label">Menos de 1 mes</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>🏥 Proveedor Principal</h3>
+            <div class="stat-value" id="visit-stat-provider" style="font-size: 18px;">—</div>
+            <div class="stat-label">Más frecuente</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-container">
+            <h2>🕒 Frecuencia de Última Visita Personal</h2>
+            <canvas id="chart-last-visit" class="chart-canvas"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>🔄 Primera Visita vs Recurrente</h2>
+            <canvas id="chart-first-visit" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h2>💉 Tipos de Servicios Solicitados</h2>
+          <canvas id="chart-service-types" class="chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Satisfacción -->
+      <div id="tab-satisfaction" class="tab-content">
+        <div class="stats-grid" style="margin-bottom: 20px;">
+          <div class="stat-card">
+            <h3>⭐ Calidad</h3>
+            <div class="stat-value" id="satisfaction-quality">0</div>
+            <div class="stat-label">Promedio (1-5)</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>👥 Trato Personal</h3>
+            <div class="stat-value" id="satisfaction-staff">0</div>
+            <div class="stat-label">Promedio (1-5)</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>🧼 Limpieza</h3>
+            <div class="stat-value" id="satisfaction-cleanliness">0</div>
+            <div class="stat-label">Promedio (1-5)</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>💰 Calidad-Precio</h3>
+            <div class="stat-value" id="satisfaction-value">0</div>
+            <div class="stat-label">Promedio (1-5)</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-container">
+            <h2>⭐ Distribución de Satisfacción General</h2>
+            <canvas id="chart-satisfaction-dist" class="chart-canvas"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>📊 NPS - Net Promoter Score</h2>
+            <canvas id="chart-nps-dist" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h2>📈 Métricas de Satisfacción Comparadas</h2>
+          <canvas id="chart-satisfaction-radar" class="chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Comparativas -->
+      <div id="tab-comparison" class="tab-content">
+        <div class="chart-grid">
+          <div class="chart-container">
+            <h2>🏛️ vs Centros de Salud Públicos</h2>
+            <canvas id="chart-vs-public" class="chart-canvas"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>💊 vs Consultorios en Farmacias</h2>
+            <canvas id="chart-vs-pharmacy" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h2>🏥 Proveedor Principal de Atención</h2>
+          <canvas id="chart-main-provider" class="chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Ranking -->
+      <div id="tab-ranking" class="tab-content">
+        <div class="table-container">
+          <div style="padding: 20px 20px 0 20px;">
+            <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">🏆 Ranking de Encuestadores</h2>
+          </div>
+          <div class="table-wrapper">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">#</th>
+                  <th>Encuestador</th>
+                  <th style="width: 100px;">Total</th>
+                  <th style="width: 100px;">Aprobadas</th>
+                  <th style="width: 100px;">Pendientes</th>
+                  <th style="width: 120px;">Tasa Aprobación</th>
+                  <th style="width: 100px;">NPS Prom.</th>
+                  <th style="width: 120px;">Satisfacción</th>
+                </tr>
+              </thead>
+              <tbody id="ranking-tbody">
+                <tr>
+                  <td colspan="8" class="empty-state">
+                    <div class="empty-state-icon">⏳</div>
+                    <div style="font-size: 16px; font-weight: 500;">Cargando ranking...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="chart-container">
+          <h2>ℹ️ Información del Período</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div>
+              <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Primera encuesta</div>
+              <div id="info-first-date" style="font-weight: 600;">—</div>
+            </div>
+            <div>
+              <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Última encuesta</div>
+              <div id="info-last-date" style="font-weight: 600;">—</div>
+            </div>
+            <div>
+              <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Días activos</div>
+              <div id="info-active-days" style="font-weight: 600;">—</div>
+            </div>
+            <div>
+              <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Encuestadores activos</div>
+              <div id="info-active-surveyors" style="font-weight: 600;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-foot">
+      <div>Consultorios Clínicos — Sistema de Gestión</div>
+      <div id="last-update" class="muted"></div>
+    </footer>
+  </div>
+</body>
+</html>

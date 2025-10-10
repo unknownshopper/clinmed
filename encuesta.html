@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Nueva encuesta — Consultorios Clínicos</title>
   <link rel="icon" href="logch.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,12 +10,236 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script type="module" src="encuesta.js"></script>
+  <style>
+    /* Estilos responsivos para móviles */
+    @media (max-width: 768px) {
+      .app {
+        padding: 0;
+        margin: 0;
+      }
+      
+      .app-header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+        align-items: flex-start;
+      }
+      
+      .app-header .brand {
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+      }
+      
+      .app-header .brand .logo {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .app-header .brand h1 {
+        font-size: 18px;
+      }
+      
+      .app-header .brand .sub {
+        font-size: 12px;
+      }
+      
+      .app-header .session {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+      }
+      
+      .app-header .session span {
+        font-size: 12px;
+      }
+      
+      .app-header .session button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .app-main {
+        padding: 12px;
+      }
+      
+      .card {
+        padding: 16px;
+        border-radius: 8px;
+      }
+      
+      .form h2 {
+        font-size: 18px;
+        margin: 20px 0 12px 0;
+        padding-bottom: 8px;
+      }
+      
+      .form h2:first-child {
+        margin-top: 0;
+      }
+      
+      .grid-2 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      
+      label {
+        margin-bottom: 12px;
+      }
+      
+      label span {
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+      
+      input[type="text"],
+      input[type="number"],
+      input[type="email"],
+      select,
+      textarea {
+        font-size: 16px; /* Evita zoom en iOS */
+        padding: 12px;
+      }
+      
+      .radio-group,
+      .checkbox-group {
+        gap: 8px;
+      }
+      
+      .radio-inline,
+      .checkbox-inline {
+        font-size: 14px;
+        padding: 10px 12px;
+        min-width: auto;
+      }
+      
+      .rating-group {
+        gap: 6px;
+      }
+      
+      .rating-inline {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+      }
+      
+      .row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .row button {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+      }
+      
+      .app-foot {
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px 12px;
+        font-size: 12px;
+        text-align: center;
+      }
+      
+      #msg {
+        font-size: 14px;
+        padding: 12px;
+      }
+    }
+    
+    /* Mejoras adicionales para móviles */
+    @media (max-width: 480px) {
+      .app-header .brand h1 {
+        font-size: 16px;
+      }
+      
+      .form h2 {
+        font-size: 16px;
+      }
+      
+      label span {
+        font-size: 13px;
+      }
+      
+      .radio-inline,
+      .checkbox-inline {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+      
+      .rating-inline {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+      }
+    }
+    
+    /* Estilos para el mensaje de estado */
+    #msg {
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #0c4a6e;
+      font-size: 14px;
+      text-align: center;
+      display: none;
+    }
+    
+    #msg.show {
+      display: block;
+    }
+    
+    #msg.error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+    
+    #msg.success {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #15803d;
+    }
+    
+    /* Mejoras de accesibilidad táctil */
+    @media (hover: none) and (pointer: coarse) {
+      input[type="radio"],
+      input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+      }
+      
+      .radio-inline,
+      .checkbox-inline {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+      
+      button,
+      .btn {
+        min-height: 44px;
+      }
+    }
+    
+    /* Ocultar elementos en móvil si es necesario */
+    @media (max-width: 768px) {
+      .hide-mobile {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="app">
     <header class="app-header">
       <div class="brand">
-        <img class="logo" src="logch.png" alt="The Unknown Shopper" />
+        <img class="logo" src="logch.png" alt="Consultorios Clínicos" />
         <div>
           <h1>Nueva encuesta</h1>
           <div class="sub">Captura de paciente</div>
@@ -28,7 +252,10 @@
     </header>
 
     <main class="app-main">
-        <section id="capture-area" class="card">
+      <section id="capture-area" class="card">
+        <!-- Mensaje de estado -->
+        <div id="msg"></div>
+        
         <form id="form-encuesta" class="form">
           <h2>Identificación</h2>
           <label>
@@ -38,472 +265,472 @@
           
           <h2>Datos demográficos</h2>
 
-<div class="grid-2">
-  <label>
-    <span>Edad</span>
-    <input type="number" id="age" min="0" max="120" required placeholder="Ej. 35" />
-  </label>
-  <div>
-    <span style="display:block;margin-bottom:6px;">Género *</span>
-    <div class="radio-group">
-      <label class="radio-inline">
-        <input type="radio" name="gender" value="Femenino" required /> Femenino
-      </label>
-      <label class="radio-inline">
-        <input type="radio" name="gender" value="Masculino" required /> Masculino
-      </label>
-      <label class="radio-inline">
-        <input type="radio" name="gender" value="Otro" required /> Otro
-      </label>
-      <label class="radio-inline">
-        <input type="radio" name="gender" value="Prefiere no decir" required /> No decir
-      </label>
-    </div>
-  </div>
-</div>
+          <div class="grid-2">
+            <label>
+              <span>Edad</span>
+              <input type="number" id="age" min="0" max="120" required placeholder="Ej. 35" />
+            </label>
+            <div>
+              <span style="display:block;margin-bottom:6px;">Género *</span>
+              <div class="radio-group">
+                <label class="radio-inline">
+                  <input type="radio" name="gender" value="Femenino" required /> Femenino
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="gender" value="Masculino" required /> Masculino
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="gender" value="Otro" required /> Otro
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="gender" value="Prefiere no decir" required /> No decir
+                </label>
+              </div>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Nivel de estudios *</span>
-  <div class="radio-group">
-    <label class="radio-inline">
-      <input type="radio" name="education" value="Sin estudios" required /> Sin estudios
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="education" value="Primaria" required /> Primaria
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="education" value="Secundaria" required /> Secundaria
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="education" value="Preparatoria / Técnico" required /> Prepa/Técnico
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="education" value="Licenciatura" required /> Licenciatura
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="education" value="Posgrado" required /> Posgrado
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Nivel de estudios *</span>
+            <div class="radio-group">
+              <label class="radio-inline">
+                <input type="radio" name="education" value="Sin estudios" required /> Sin estudios
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="education" value="Primaria" required /> Primaria
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="education" value="Secundaria" required /> Secundaria
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="education" value="Preparatoria / Técnico" required /> Prepa/Técnico
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="education" value="Licenciatura" required /> Licenciatura
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="education" value="Posgrado" required /> Posgrado
+              </label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Ocupación *</span>
-  <div class="radio-group">
-    <label class="radio-inline">
-      <input type="radio" name="occupation" value="Empleado" required /> Empleado
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="occupation" value="Independiente / Comerciante" required /> Independiente
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="occupation" value="Estudiante" required /> Estudiante
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="occupation" value="Hogar" required /> Hogar
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="occupation" value="Jubilado" required /> Jubilado
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="occupation" value="Desempleado" required /> Desempleado
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="occupation" value="Otro" required /> Otro
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Ocupación *</span>
+            <div class="radio-group">
+              <label class="radio-inline">
+                <input type="radio" name="occupation" value="Empleado" required /> Empleado
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="occupation" value="Independiente / Comerciante" required /> Independiente
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="occupation" value="Estudiante" required /> Estudiante
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="occupation" value="Hogar" required /> Hogar
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="occupation" value="Jubilado" required /> Jubilado
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="occupation" value="Desempleado" required /> Desempleado
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="occupation" value="Otro" required /> Otro
+              </label>
+            </div>
+          </div>
 
-<label>
-  <span>Colonia / Zona donde vive</span>
-  <input type="text" id="neighborhood" placeholder="Ej. Centro, Col. Reforma" />
-</label>
+          <label>
+            <span>Colonia / Zona donde vive</span>
+            <input type="text" id="neighborhood" placeholder="Ej. Centro, Col. Reforma" />
+          </label>
 
-<h2>Acceso a servicios de salud</h2>
+          <h2>Acceso a servicios de salud</h2>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">¿Cuenta con seguro médico? *</span>
-  <div class="radio-group">
-    <label class="radio-inline">
-      <input type="radio" name="insurance" value="No tengo seguro" required /> No tengo
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="insurance" value="IMSS" required /> IMSS
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="insurance" value="ISSSTE" required /> ISSSTE
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="insurance" value="Seguro Popular / INSABI" required /> INSABI
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="insurance" value="Seguro privado" required /> Privado
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="insurance" value="Otro" required /> Otro
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">¿Cuenta con seguro médico? *</span>
+            <div class="radio-group">
+              <label class="radio-inline">
+                <input type="radio" name="insurance" value="No tengo seguro" required /> No tengo
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="insurance" value="IMSS" required /> IMSS
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="insurance" value="ISSSTE" required /> ISSSTE
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="insurance" value="Seguro Popular / INSABI" required /> INSABI
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="insurance" value="Seguro privado" required /> Privado
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="insurance" value="Otro" required /> Otro
+              </label>
+            </div>
+          </div>
 
-<label>
-  <span>En los últimos 6 meses, ¿dónde ha acudido principalmente para atención médica?</span>
-  <select id="main_provider" required>
-    <option value="">Selecciona…</option>
-    <option>Centro de salud público</option>
-    <option>Hospital público (IMSS, ISSSTE, SSA)</option>
-    <option>Consultorio en farmacia (Similares, Del Ahorro, etc.)</option>
-    <option>Consultorio privado independiente</option>
-    <option>Hospital privado</option>
-    <option>No he acudido</option>
-    <option>Otro</option>
-  </select>
-</label>
+          <label>
+            <span>En los últimos 6 meses, ¿dónde ha acudido principalmente para atención médica?</span>
+            <select id="main_provider" required>
+              <option value="">Selecciona…</option>
+              <option>Centro de salud público</option>
+              <option>Hospital público (IMSS, ISSSTE, SSA)</option>
+              <option>Consultorio en farmacia (Similares, Del Ahorro, etc.)</option>
+              <option>Consultorio privado independiente</option>
+              <option>Hospital privado</option>
+              <option>No he acudido</option>
+              <option>Otro</option>
+            </select>
+          </label>
 
-<h2>Información familiar</h2>
+          <h2>Información familiar</h2>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">¿Tiene hijos? *</span>
-  <div class="radio-group">
-    <label class="radio-inline">
-      <input type="radio" name="has_children" value="no" required /> No
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="has_children" value="yes" required /> Sí
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">¿Tiene hijos? *</span>
+            <div class="radio-group">
+              <label class="radio-inline">
+                <input type="radio" name="has_children" value="no" required /> No
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="has_children" value="yes" required /> Sí
+              </label>
+            </div>
+          </div>
 
-<!-- Sección que aparece solo si tiene hijos -->
-<div id="children-section" style="display:none;">
-  <label>
-    <span>¿Cuántos hijos tiene?</span>
-    <input type="number" id="num_children" min="1" max="20" placeholder="Ej. 2" />
-  </label>
+          <!-- Sección que aparece solo si tiene hijos -->
+          <div id="children-section" style="display:none;">
+            <label>
+              <span>¿Cuántos hijos tiene?</span>
+              <input type="number" id="num_children" min="1" max="20" placeholder="Ej. 2" />
+            </label>
 
-  <label>
-    <span>¿Cuándo fue la última vez que llevó a su hijo(a) por primeros auxilios? (raspón, piquete, fiebre, golpe, etc.)</span>
-    <select id="child_last_visit">
-      <option value="">Selecciona…</option>
-      <option>Menos de 1 mes</option>
-      <option>1-3 meses</option>
-      <option>3-6 meses</option>
-      <option>6-12 meses</option>
-      <option>Más de 1 año</option>
-      <option>Nunca he llevado a mis hijos</option>
-    </select>
-  </label>
+            <label>
+              <span>¿Cuándo fue la última vez que llevó a su hijo(a) por primeros auxilios? (raspón, piquete, fiebre, golpe, etc.)</span>
+              <select id="child_last_visit">
+                <option value="">Selecciona…</option>
+                <option>Menos de 1 mes</option>
+                <option>1-3 meses</option>
+                <option>3-6 meses</option>
+                <option>6-12 meses</option>
+                <option>Más de 1 año</option>
+                <option>Nunca he llevado a mis hijos</option>
+              </select>
+            </label>
 
-  <label>
-    <span>¿Dónde llevó a su hijo(a) la última vez?</span>
-    <select id="child_service_location">
-      <option value="">Selecciona…</option>
-      <option>Este consultorio</option>
-      <option>Otro consultorio privado</option>
-      <option>Consultorio en farmacia</option>
-      <option>Centro de salud público</option>
-      <option>Hospital público</option>
-      <option>Hospital privado</option>
-      <option>No aplica</option>
-    </select>
-  </label>
+            <label>
+              <span>¿Dónde llevó a su hijo(a) la última vez?</span>
+              <select id="child_service_location">
+                <option value="">Selecciona…</option>
+                <option>Este consultorio</option>
+                <option>Otro consultorio privado</option>
+                <option>Consultorio en farmacia</option>
+                <option>Centro de salud público</option>
+                <option>Hospital público</option>
+                <option>Hospital privado</option>
+                <option>No aplica</option>
+              </select>
+            </label>
 
-  <div class="grid-2">
-    <label>
-      <span>Costo aproximado de la última consulta de su hijo(a)</span>
-      <input type="number" id="child_cost" min="0" max="10000" placeholder="Ej. 150" />
-    </label>
-    <label>
-      <span>Tiempo de espera en su última visita (minutos)</span>
-      <input type="number" id="child_wait_time" min="0" max="600" placeholder="Ej. 20" />
-    </label>
-  </div>
+            <div class="grid-2">
+              <label>
+                <span>Costo aproximado de la última consulta de su hijo(a)</span>
+                <input type="number" id="child_cost" min="0" max="10000" placeholder="Ej. 150" />
+              </label>
+              <label>
+                <span>Tiempo de espera en su última visita (minutos)</span>
+                <input type="number" id="child_wait_time" min="0" max="600" placeholder="Ej. 20" />
+              </label>
+            </div>
 
-  <label>
-    <span>Distancia aproximada del lugar donde llevó a su hijo(a) (km)</span>
-    <input type="number" id="child_distance" min="0" max="100" step="0.1" placeholder="Ej. 2.5" />
-  </label>
+            <label>
+              <span>Distancia aproximada del lugar donde llevó a su hijo(a) (km)</span>
+              <input type="number" id="child_distance" min="0" max="100" step="0.1" placeholder="Ej. 2.5" />
+            </label>
 
-  <label>
-    <span>¿Qué tan satisfecho quedó con la atención para su hijo(a)? (1-5)</span>
-    <select id="child_satisfaction">
-      <option value="">Selecciona…</option>
-      <option value="1">1 — Muy insatisfecho</option>
-      <option value="2">2 — Insatisfecho</option>
-      <option value="3">3 — Neutral</option>
-      <option value="4">4 — Satisfecho</option>
-      <option value="5">5 — Muy satisfecho</option>
-      <option value="na">No aplica</option>
-    </select>
-  </label>
-</div>
+            <label>
+              <span>¿Qué tan satisfecho quedó con la atención para su hijo(a)? (1-5)</span>
+              <select id="child_satisfaction">
+                <option value="">Selecciona…</option>
+                <option value="1">1 — Muy insatisfecho</option>
+                <option value="2">2 — Insatisfecho</option>
+                <option value="3">3 — Neutral</option>
+                <option value="4">4 — Satisfecho</option>
+                <option value="5">5 — Muy satisfecho</option>
+                <option value="na">No aplica</option>
+              </select>
+            </label>
+          </div>
 
-<h2>Su última consulta personal</h2>
+          <h2>Su última consulta personal</h2>
 
-<label>
-  <span>¿Cuándo fue su última consulta de primeros auxilios o urgencia menor?</span>
-  <select id="last_personal_visit" required>
-    <option value="">Selecciona…</option>
-    <option>Menos de 1 semana</option>
-    <option>1-2 semanas</option>
-    <option>2-4 semanas</option>
-    <option>1-3 meses</option>
-    <option>3-6 meses</option>
-    <option>6-12 meses</option>
-    <option>Más de 1 año</option>
-    <option>Nunca he acudido</option>
-  </select>
-</label>
+          <label>
+            <span>¿Cuándo fue su última consulta de primeros auxilios o urgencia menor?</span>
+            <select id="last_personal_visit" required>
+              <option value="">Selecciona…</option>
+              <option>Menos de 1 semana</option>
+              <option>1-2 semanas</option>
+              <option>2-4 semanas</option>
+              <option>1-3 meses</option>
+              <option>3-6 meses</option>
+              <option>6-12 meses</option>
+              <option>Más de 1 año</option>
+              <option>Nunca he acudido</option>
+            </select>
+          </label>
 
-<h2>Última vez que recibió servicio de primeros auxilios</h2>
+          <h2>Última vez que recibió servicio de primeros auxilios</h2>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Tipo de servicio que recibió la última vez (puede marcar varios) *</span>
-  <div class="checkbox-group">
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Primeros auxilios / Urgencia menor" /> Primeros auxilios
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Curación de heridas" /> Curación
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Sutura (costura de heridas)" /> Sutura
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Aplicación de inyección" /> Inyección
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Inmovilización (vendaje, férula)" /> Inmovilización
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Retiro de verrugas" /> Verrugas
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Perforación de orejas (aretes)" /> Aretes
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Diagnóstico y canalización" /> Diagnóstico
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Tratamiento de uñas enterradas" /> Uñas enterradas
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Consulta general" /> Consulta general
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Compra de productos para curación" /> Productos
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="service_type" value="Otro" /> Otro
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Tipo de servicio que recibió la última vez (puede marcar varios) *</span>
+            <div class="checkbox-group">
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Primeros auxilios / Urgencia menor" /> Primeros auxilios
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Curación de heridas" /> Curación
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Sutura (costura de heridas)" /> Sutura
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Aplicación de inyección" /> Inyección
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Inmovilización (vendaje, férula)" /> Inmovilización
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Retiro de verrugas" /> Verrugas
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Perforación de orejas (aretes)" /> Aretes
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Diagnóstico y canalización" /> Diagnóstico
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Tratamiento de uñas enterradas" /> Uñas enterradas
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Consulta general" /> Consulta general
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Compra de productos para curación" /> Productos
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="service_type" value="Otro" /> Otro
+              </label>
+            </div>
+          </div>
 
-<div class="grid-2">
-  <label>
-    <span>Tiempo de espera en su última visita (minutos)</span>
-    <input type="number" id="wait_time" min="0" max="600" required placeholder="Ej. 5" />
-  </label>
-  <div>
-    <span style="display:block;margin-bottom:6px;">¿Fue su primera visita a este consultorio? *</span>
-    <div class="radio-group">
-      <label class="radio-inline">
-        <input type="radio" name="first_visit" value="yes" required /> Sí
-      </label>
-      <label class="radio-inline">
-        <input type="radio" name="first_visit" value="no" required /> No
-      </label>
-    </div>
-  </div>
-</div>
+          <div class="grid-2">
+            <label>
+              <span>Tiempo de espera en su última visita (minutos)</span>
+              <input type="number" id="wait_time" min="0" max="600" required placeholder="Ej. 5" />
+            </label>
+            <div>
+              <span style="display:block;margin-bottom:6px;">¿Fue su primera visita a este consultorio? *</span>
+              <div class="radio-group">
+                <label class="radio-inline">
+                  <input type="radio" name="first_visit" value="yes" required /> Sí
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="first_visit" value="no" required /> No
+                </label>
+              </div>
+            </div>
+          </div>
 
-<h2>Percepción del servicio</h2>
+          <h2>Percepción del servicio</h2>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">¿Por qué eligió este consultorio la última vez? *</span>
-  <div class="radio-group">
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="Cercanía / Ubicación" required /> Cercanía
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="Precio accesible" required /> Precio
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="Rapidez de atención" required /> Rapidez
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="No requiere cita" required /> Sin cita
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="Horario extendido" required /> Horario
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="Recomendación" required /> Recomendación
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="Buena experiencia previa" required /> Experiencia previa
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="No tengo otra opción cercana" required /> Sin opciones
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="reason_choice" value="Otro" required /> Otro
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">¿Por qué eligió este consultorio la última vez? *</span>
+            <div class="radio-group">
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="Cercanía / Ubicación" required /> Cercanía
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="Precio accesible" required /> Precio
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="Rapidez de atención" required /> Rapidez
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="No requiere cita" required /> Sin cita
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="Horario extendido" required /> Horario
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="Recomendación" required /> Recomendación
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="Buena experiencia previa" required /> Experiencia previa
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="No tengo otra opción cercana" required /> Sin opciones
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="reason_choice" value="Otro" required /> Otro
+              </label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Calidad de atención recibida en su última visita *</span>
-  <div class="rating-group">
-    <label class="rating-inline"><input type="radio" name="quality" value="1" required /> 1</label>
-    <label class="rating-inline"><input type="radio" name="quality" value="2" required /> 2</label>
-    <label class="rating-inline"><input type="radio" name="quality" value="3" required /> 3</label>
-    <label class="rating-inline"><input type="radio" name="quality" value="4" required /> 4</label>
-    <label class="rating-inline"><input type="radio" name="quality" value="5" required /> 5</label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Calidad de atención recibida en su última visita *</span>
+            <div class="rating-group">
+              <label class="rating-inline"><input type="radio" name="quality" value="1" required /> 1</label>
+              <label class="rating-inline"><input type="radio" name="quality" value="2" required /> 2</label>
+              <label class="rating-inline"><input type="radio" name="quality" value="3" required /> 3</label>
+              <label class="rating-inline"><input type="radio" name="quality" value="4" required /> 4</label>
+              <label class="rating-inline"><input type="radio" name="quality" value="5" required /> 5</label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Trato del personal *</span>
-  <div class="rating-group">
-    <label class="rating-inline"><input type="radio" name="staff_treatment" value="1" required /> 1</label>
-    <label class="rating-inline"><input type="radio" name="staff_treatment" value="2" required /> 2</label>
-    <label class="rating-inline"><input type="radio" name="staff_treatment" value="3" required /> 3</label>
-    <label class="rating-inline"><input type="radio" name="staff_treatment" value="4" required /> 4</label>
-    <label class="rating-inline"><input type="radio" name="staff_treatment" value="5" required /> 5</label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Trato del personal *</span>
+            <div class="rating-group">
+              <label class="rating-inline"><input type="radio" name="staff_treatment" value="1" required /> 1</label>
+              <label class="rating-inline"><input type="radio" name="staff_treatment" value="2" required /> 2</label>
+              <label class="rating-inline"><input type="radio" name="staff_treatment" value="3" required /> 3</label>
+              <label class="rating-inline"><input type="radio" name="staff_treatment" value="4" required /> 4</label>
+              <label class="rating-inline"><input type="radio" name="staff_treatment" value="5" required /> 5</label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Limpieza e higiene del lugar *</span>
-  <div class="rating-group">
-    <label class="rating-inline"><input type="radio" name="cleanliness" value="1" required /> 1</label>
-    <label class="rating-inline"><input type="radio" name="cleanliness" value="2" required /> 2</label>
-    <label class="rating-inline"><input type="radio" name="cleanliness" value="3" required /> 3</label>
-    <label class="rating-inline"><input type="radio" name="cleanliness" value="4" required /> 4</label>
-    <label class="rating-inline"><input type="radio" name="cleanliness" value="5" required /> 5</label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Limpieza e higiene del lugar *</span>
+            <div class="rating-group">
+              <label class="rating-inline"><input type="radio" name="cleanliness" value="1" required /> 1</label>
+              <label class="rating-inline"><input type="radio" name="cleanliness" value="2" required /> 2</label>
+              <label class="rating-inline"><input type="radio" name="cleanliness" value="3" required /> 3</label>
+              <label class="rating-inline"><input type="radio" name="cleanliness" value="4" required /> 4</label>
+              <label class="rating-inline"><input type="radio" name="cleanliness" value="5" required /> 5</label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Relación calidad-precio *</span>
-  <div class="rating-group">
-    <label class="rating-inline"><input type="radio" name="value_for_money" value="1" required /> 1</label>
-    <label class="rating-inline"><input type="radio" name="value_for_money" value="2" required /> 2</label>
-    <label class="rating-inline"><input type="radio" name="value_for_money" value="3" required /> 3</label>
-    <label class="rating-inline"><input type="radio" name="value_for_money" value="4" required /> 4</label>
-    <label class="rating-inline"><input type="radio" name="value_for_money" value="5" required /> 5</label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Relación calidad-precio *</span>
+            <div class="rating-group">
+              <label class="rating-inline"><input type="radio" name="value_for_money" value="1" required /> 1</label>
+              <label class="rating-inline"><input type="radio" name="value_for_money" value="2" required /> 2</label>
+              <label class="rating-inline"><input type="radio" name="value_for_money" value="3" required /> 3</label>
+              <label class="rating-inline"><input type="radio" name="value_for_money" value="4" required /> 4</label>
+              <label class="rating-inline"><input type="radio" name="value_for_money" value="5" required /> 5</label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Satisfacción general con el servicio recibido *</span>
-  <div class="rating-group">
-    <label class="rating-inline"><input type="radio" name="satisfaction" value="1" required /> 1</label>
-    <label class="rating-inline"><input type="radio" name="satisfaction" value="2" required /> 2</label>
-    <label class="rating-inline"><input type="radio" name="satisfaction" value="3" required /> 3</label>
-    <label class="rating-inline"><input type="radio" name="satisfaction" value="4" required /> 4</label>
-    <label class="rating-inline"><input type="radio" name="satisfaction" value="5" required /> 5</label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Satisfacción general con el servicio recibido *</span>
+            <div class="rating-group">
+              <label class="rating-inline"><input type="radio" name="satisfaction" value="1" required /> 1</label>
+              <label class="rating-inline"><input type="radio" name="satisfaction" value="2" required /> 2</label>
+              <label class="rating-inline"><input type="radio" name="satisfaction" value="3" required /> 3</label>
+              <label class="rating-inline"><input type="radio" name="satisfaction" value="4" required /> 4</label>
+              <label class="rating-inline"><input type="radio" name="satisfaction" value="5" required /> 5</label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">¿Recomendaría este consultorio? (0-10) *</span>
-  <div class="rating-group">
-    <label class="rating-inline"><input type="radio" name="nps" value="0" required /> 0</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="1" required /> 1</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="2" required /> 2</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="3" required /> 3</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="4" required /> 4</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="5" required /> 5</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="6" required /> 6</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="7" required /> 7</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="8" required /> 8</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="9" required /> 9</label>
-    <label class="rating-inline"><input type="radio" name="nps" value="10" required /> 10</label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">¿Recomendaría este consultorio? (0-10) *</span>
+            <div class="rating-group">
+              <label class="rating-inline"><input type="radio" name="nps" value="0" required /> 0</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="1" required /> 1</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="2" required /> 2</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="3" required /> 3</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="4" required /> 4</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="5" required /> 5</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="6" required /> 6</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="7" required /> 7</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="8" required /> 8</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="9" required /> 9</label>
+              <label class="rating-inline"><input type="radio" name="nps" value="10" required /> 10</label>
+            </div>
+          </div>
 
-<h2>Comparación con otros servicios</h2>
+          <h2>Comparación con otros servicios</h2>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Comparado con centros de salud públicos *</span>
-  <div class="radio-group">
-    <label class="radio-inline">
-      <input type="radio" name="vs_public" value="Mucho mejor" required /> Mucho mejor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_public" value="Mejor" required /> Mejor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_public" value="Similar" required /> Similar
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_public" value="Peor" required /> Peor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_public" value="Mucho peor" required /> Mucho peor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_public" value="No he usado centros públicos" required /> No he usado
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Comparado con centros de salud públicos *</span>
+            <div class="radio-group">
+              <label class="radio-inline">
+                <input type="radio" name="vs_public" value="Mucho mejor" required /> Mucho mejor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_public" value="Mejor" required /> Mejor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_public" value="Similar" required /> Similar
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_public" value="Peor" required /> Peor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_public" value="Mucho peor" required /> Mucho peor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_public" value="No he usado centros públicos" required /> No he usado
+              </label>
+            </div>
+          </div>
 
-<div>
-  <span style="display:block;margin-bottom:6px;">Comparado con consultorios en farmacias *</span>
-  <div class="radio-group">
-    <label class="radio-inline">
-      <input type="radio" name="vs_pharmacy" value="Mucho mejor" required /> Mucho mejor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_pharmacy" value="Mejor" required /> Mejor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_pharmacy" value="Similar" required /> Similar
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_pharmacy" value="Peor" required /> Peor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_pharmacy" value="Mucho peor" required /> Mucho peor
-    </label>
-    <label class="radio-inline">
-      <input type="radio" name="vs_pharmacy" value="No he usado consultorios de farmacia" required /> No he usado
-    </label>
-  </div>
-</div>
+          <div>
+            <span style="display:block;margin-bottom:6px;">Comparado con consultorios en farmacias *</span>
+            <div class="radio-group">
+              <label class="radio-inline">
+                <input type="radio" name="vs_pharmacy" value="Mucho mejor" required /> Mucho mejor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_pharmacy" value="Mejor" required /> Mejor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_pharmacy" value="Similar" required /> Similar
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_pharmacy" value="Peor" required /> Peor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_pharmacy" value="Mucho peor" required /> Mucho peor
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="vs_pharmacy" value="No he usado consultorios de farmacia" required /> No he usado
+              </label>
+            </div>
+          </div>
 
-<h2>Necesidades y sugerencias</h2>
+          <h2>Necesidades y sugerencias</h2>
 
-<label>
-  <span>¿Qué servicio adicional le gustaría que ofreciéramos?</span>
-  <select id="desired_service">
-    <option value="">Selecciona (opcional)…</option>
-    <option>Análisis clínicos básicos</option>
-    <option>Toma de presión y signos vitales</option>
-    <option>Electrocardiograma</option>
-    <option>Nebulizaciones</option>
-    <option>Pruebas rápidas (COVID, embarazo, glucosa)</option>
-    <option>Venta de medicamentos</option>
-    <option>Consultas especializadas</option>
-    <option>Servicio a domicilio</option>
-    <option>Otro</option>
-  </select>
-</label>
+          <label>
+            <span>¿Qué servicio adicional le gustaría que ofreciéramos?</span>
+            <select id="desired_service">
+              <option value="">Selecciona (opcional)…</option>
+              <option>Análisis clínicos básicos</option>
+              <option>Toma de presión y signos vitales</option>
+              <option>Electrocardiograma</option>
+              <option>Nebulizaciones</option>
+              <option>Pruebas rápidas (COVID, embarazo, glucosa)</option>
+              <option>Venta de medicamentos</option>
+              <option>Consultas especializadas</option>
+              <option>Servicio a domicilio</option>
+              <option>Otro</option>
+            </select>
+          </label>
 
-<label>
-  <span>Comentarios o sugerencias</span>
-  <textarea id="comments" rows="3" placeholder="Opcional: comparta su experiencia o sugerencias"></textarea>
-</label>
+          <label>
+            <span>Comentarios o sugerencias</span>
+            <textarea id="comments" rows="3" placeholder="Opcional: comparta su experiencia o sugerencias"></textarea>
+          </label>
 
-<label class="row">
-  <input type="checkbox" id="consent" required />
-  <span>Confirmo consentimiento informado y uso anónimo de datos para mejora del servicio.</span>
-</label>
+          <label class="row">
+            <input type="checkbox" id="consent" required />
+            <span>Confirmo consentimiento informado y uso anónimo de datos para mejora del servicio.</span>
+          </label>
 
-<div class="row" style="margin-top:12px">
-  <button id="btn-save" class="btn" type="submit">Guardar</button>
-  <button id="btn-save-submit" class="btn btn-outline" type="button" title="Guardar y enviar a revisión">Guardar y enviar</button>
-</div>
+          <div class="row" style="margin-top:12px">
+            <button id="btn-clear" class="btn btn-outline" type="button">Limpiar</button>
+            <button id="btn-save" class="btn" type="submit">Enviar</button>
+          </div>
 
         </form>
       </section>

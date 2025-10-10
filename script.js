@@ -212,69 +212,170 @@ async function loadCounts() {
         let q1;
         if (isAdmin() || roleName() === "supervisor") {
           // Admin/Supervisor: ver todas
-          q1 = query(coll, orderBy("created_at", "desc"), limit(50));
+          q1 = query(coll, orderBy("created_at", "desc"), limit(100));
         } else {
           // Encuestador: solo propias
           q1 = query(
             coll,
             where("created_by", "==", currentUser.uid),
             orderBy("created_at", "desc"),
-            limit(50)
+            limit(100)
           );
         }
       const qs = await getDocs(q1);
+      
       surveysList.innerHTML = qs.docs.map((d, i) => {
         const s = d.data();
-        const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString() : "";
+        const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString('es-MX', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }) : "Sin fecha";
+        
         const label = `Clinmed${String(i + 1).padStart(3, "0")}`;
-        return `<div class="card">
-          <div class="row" style="justify-content:space-between;align-items:center">
-            <a href="encuesta.html?id=${d.id}"><strong>${label}</strong></a>
-            <span class="muted">${s.status} — ${createdAt}</span>
-          </div>
-          <div class="row">
-            <a class="btn btn-outline" href="encuesta.html?id=${d.id}">Ver</a>
-            ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit">Editar</a>` : ``}
-            ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}">Eliminar</button>` : ``}
+        
+        // Obtener email del encuestador desde payload
+        const encuestadorEmail = s.payload?.surveyor_id || "Desconocido";
+        
+        // Generar link de ubicación si existe
+        let locationHtml = '<span class="muted">Sin ubicación</span>';
+        if (s.location?.lat && s.location?.lng) {
+          const { lat, lng, accuracy } = s.location;
+          const gmapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+          const coords = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+          locationHtml = `<a href="${gmapsUrl}" target="_blank" rel="noopener" class="tag" style="text-decoration:none">
+            📍 ${coords}${accuracy ? ` (~${Math.round(accuracy)}m)` : ''}
+          </a>`;
+        }
+        
+        return `<div class="card" style="margin-bottom: 12px;">
+          <div style="display:grid;gap:8px;">
+            <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div>
+                <strong style="font-size:16px;color:var(--primary)">${label}</strong>
+                <span class="muted" style="margin-left:8px;">Estado: ${s.status || 'submitted'}</span>
+              </div>
+              <span class="muted" style="font-size:13px;">📅 ${createdAt}</span>
+            </div>
+            
+            <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center;">
+              <span class="tag">👤 ${encuestadorEmail}</span>
+              ${locationHtml}
+            </div>
+            
+            <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px;">
+              <a class="btn btn-outline" href="encuesta.html?id=${d.id}" style="font-size:13px;padding:6px 12px;">
+                👁️ Ver
+              </a>
+              <button class="btn btn-outline" onclick="window.open('encuesta.html?id=${d.id}', '_blank')" style="font-size:13px;padding:6px 12px;">
+                📸 Captura
+              </button>
+              ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit" style="font-size:13px;padding:6px 12px;">✏️ Editar</a>` : ''}
+              ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}" style="font-size:13px;padding:6px 12px;background:#fee;color:#b91c1c;border-color:#fca;">🗑️ Eliminar</button>` : ''}
+            </div>
           </div>
         </div>`;
       }).join("");
+      
+      // Agregar event listeners para botones de eliminar
+      if (isAdmin()) {
+        document.querySelectorAll('[data-del]').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.target.dataset.del;
+            if (confirm('¿Estás seguro de eliminar esta encuesta? Esta acción no se puede deshacer.')) {
+              await deleteSurvey(id);
+              await listOwnSurveys();
+            }
+          });
+        });
+      }
+      
     } catch (e) {
       // Fallback sin orderBy mientras el índice se habilita
       if (e?.code === "failed-precondition") {
         let q2;
         if (isAdmin() || roleName() === "supervisor") {
-        q2 = query(coll, limit(50)); // todas
-      } else {
-        q2 = query(coll, where("created_by", "==", currentUser.uid), limit(50)); // propias
-      }
-    const qs = await getDocs(q2);
-    // luego mantén tu sort manual (desc por created_at) y el render como ya lo tienes
-
+          q2 = query(coll, limit(100));
+        } else {
+          q2 = query(coll, where("created_by", "==", currentUser.uid), limit(100));
+        }
+        const qs = await getDocs(q2);
+        
         const ownDocs = qs.docs.slice().sort((a, b) => {
-        const ta = a.data().created_at?.toMillis?.() ?? 0;
-        const tb = b.data().created_at?.toMillis?.() ?? 0;
-        return tb - ta;
-    });
-   
-   surveysList.innerHTML = ownDocs.map((d, i) => {
-  const s = d.data();
-  const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString() : "";
-  const label = `Clinmed${String(i + 1).padStart(3, "0")}`;
-  return `<div class="card">
-    <div class="row" style="justify-content:space-between;align-items:center">
-      <a href="encuesta.html?id=${d.id}"><strong>${label}</strong></a>
-      <span class="muted">${s.status} — ${createdAt}</span>
-    </div>
-    <div class="row">
-      <a class="btn btn-outline" href="encuesta.html?id=${d.id}">Ver</a>
-      ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit">Editar</a>` : ``}
-      ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}">Eliminar</button>` : ``}
-    </div>
-  </div>`;
-}).join("");
+          const ta = a.data().created_at?.toMillis?.() ?? 0;
+          const tb = b.data().created_at?.toMillis?.() ?? 0;
+          return tb - ta;
+        });
+        
+        surveysList.innerHTML = ownDocs.map((d, i) => {
+          const s = d.data();
+          const createdAt = s.created_at?.toDate ? s.created_at.toDate().toLocaleString('es-MX', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          }) : "Sin fecha";
+          
+          const label = `Clinmed${String(i + 1).padStart(3, "0")}`;
+          const encuestadorEmail = s.payload?.surveyor_id || "Desconocido";
+          
+          let locationHtml = '<span class="muted">Sin ubicación</span>';
+          if (s.location?.lat && s.location?.lng) {
+            const { lat, lng, accuracy } = s.location;
+            const gmapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+            const coords = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            locationHtml = `<a href="${gmapsUrl}" target="_blank" rel="noopener" class="tag" style="text-decoration:none">
+              📍 ${coords}${accuracy ? ` (~${Math.round(accuracy)}m)` : ''}
+            </a>`;
+          }
+          
+          return `<div class="card" style="margin-bottom: 12px;">
+            <div style="display:grid;gap:8px;">
+              <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <div>
+                  <strong style="font-size:16px;color:var(--primary)">${label}</strong>
+                  <span class="muted" style="margin-left:8px;">Estado: ${s.status || 'submitted'}</span>
+                </div>
+                <span class="muted" style="font-size:13px;">📅 ${createdAt}</span>
+              </div>
+              
+              <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center;">
+                <span class="tag">👤 ${encuestadorEmail}</span>
+                ${locationHtml}
+              </div>
+              
+              <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px;">
+                <a class="btn btn-outline" href="encuesta.html?id=${d.id}" style="font-size:13px;padding:6px 12px;">
+                  👁️ Ver
+                </a>
+                <button class="btn btn-outline" onclick="window.open('encuesta.html?id=${d.id}', '_blank')" style="font-size:13px;padding:6px 12px;">
+                  📸 Captura
+                </button>
+                ${canEdit() ? `<a class="btn" href="encuesta.html?id=${d.id}#edit" style="font-size:13px;padding:6px 12px;">✏️ Editar</a>` : ''}
+                ${isAdmin() ? `<button class="btn btn-outline" data-del="${d.id}" style="font-size:13px;padding:6px 12px;background:#fee;color:#b91c1c;border-color:#fca;">🗑️ Eliminar</button>` : ''}
+              </div>
+            </div>
+          </div>`;
+        }).join("");
+        
+        // Agregar event listeners para botones de eliminar
+        if (isAdmin()) {
+          document.querySelectorAll('[data-del]').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              const id = e.target.dataset.del;
+              if (confirm('¿Estás seguro de eliminar esta encuesta? Esta acción no se puede deshacer.')) {
+                await deleteSurvey(id);
+                await listOwnSurveys();
+              }
+            });
+          });
+        }
       } else {
         console.error(e);
+        surveysList.innerHTML = `<div class="card"><p style="color:#b91c1c;">Error al cargar encuestas: ${e.message}</p></div>`;
       }
     }
   }

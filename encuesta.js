@@ -48,8 +48,8 @@ const userEmail = el("user-email");
 const form = el("form-encuesta");
 const msg = el("msg");
 const btnCancel = el("btn-cancel");
+const btnClear = el("btn-clear");
 const btnSave = el("btn-save");
-const btnSaveSubmit = el("btn-save-submit");
 
 const fields = {
   surveyor_id: el("surveyor_id"),
@@ -91,7 +91,9 @@ let currentRole = null; // opcional si luego validamos rol para entrar aquí
 
 function setMessage(text, isError = false) {
   msg.textContent = text;
-  msg.style.color = isError ? "#b91c1c" : "#64748b";
+  msg.style.display = "block";
+  msg.className = isError ? "error" : "success";
+  msg.style.color = isError ? "#b91c1c" : "#15803d";
 }
 
 // Helper para obtener valor de radio buttons
@@ -388,42 +390,49 @@ function bindEvents() {
     window.location.href = "index.html";
   });
 
-  // Guardar
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    btnSave.disabled = true;
-    btnSaveSubmit.disabled = true;
-    setMessage("Guardando…");
-    try {
-      await saveSurvey("submitted");
-      setMessage("Encuesta guardada.");
-      // Regresar al dashboard
-      setTimeout(() => (window.location.href = "index.html"), 600);
-    } catch (err) {
-      setMessage(err.message || "No se pudo guardar", true);
-    } finally {
-      btnSave.disabled = false;
-      btnSaveSubmit.disabled = false;
+  // Limpiar formulario
+  btnClear?.addEventListener("click", () => {
+    if (confirm("¿Estás seguro de limpiar el formulario? Se perderán todos los datos.")) {
+      form.reset();
+      document.getElementById("children-section").style.display = "none";
+      setMessage("Formulario limpiado", false);
+      setTimeout(() => {
+        const msgEl = document.getElementById("msg");
+        msgEl.textContent = "";
+        msgEl.style.display = "none";
+      }, 2000);
     }
   });
 
-  // Guardar y enviar (igual que submit por ahora)
-  btnSaveSubmit?.addEventListener("click", async () => {
+  // Enviar (submit del formulario)
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    // Validar que al menos un tipo de servicio esté seleccionado
+    const serviceTypes = document.querySelectorAll('input[name="service_type"]:checked');
+    if (serviceTypes.length === 0) {
+      setMessage("Por favor selecciona al menos un tipo de servicio", true);
+      return;
+    }
+    
     btnSave.disabled = true;
-    btnSaveSubmit.disabled = true;
-    setMessage("Guardando y enviando…");
+    btnClear.disabled = true;
+    setMessage("Enviando encuesta…");
+    
     try {
       await saveSurvey("submitted");
-      setMessage("Encuesta enviada.");
-      setTimeout(() => (window.location.href = "index.html"), 600);
+      setMessage("✅ Encuesta enviada exitosamente", false);
+      // Regresar al dashboard
+      setTimeout(() => (window.location.href = "index.html"), 1500);
     } catch (err) {
-      setMessage(err.message || "No se pudo guardar", true);
+      setMessage("❌ " + (err.message || "No se pudo enviar"), true);
     } finally {
       btnSave.disabled = false;
-      btnSaveSubmit.disabled = false;
+      btnClear.disabled = false;
     }
   });
-      // Mostrar/ocultar sección de hijos
+
+  // Mostrar/ocultar sección de hijos
   const hasChildrenRadios = document.getElementsByName("has_children");
   const childrenSection = document.getElementById("children-section");
   
@@ -431,25 +440,12 @@ function bindEvents() {
     radio.addEventListener("change", () => {
       if (getRadioValue(hasChildrenRadios) === "yes") {
         childrenSection.style.display = "block";
-        el("num_children").required = true;
-        el("child_last_visit").required = true;
-        el("child_service_location").required = true;
       } else {
         childrenSection.style.display = "none";
-        el("num_children").required = false;
-        el("child_last_visit").required = false;
-        el("child_service_location").required = false;
-        el("num_children").value = "";
-        el("child_last_visit").value = "";
-        el("child_service_location").value = "";
-        el("child_cost").value = "";
-        el("child_wait_time").value = "";
-        el("child_distance").value = "";
-        el("child_satisfaction").value = "";
       }
     });
   });
-}
+} 
 
 function boot() {
   bindEvents();

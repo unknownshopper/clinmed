@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lista de Encuestas — Consultorios Clínicos</title>
+  <link rel="icon" href="logch.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script type="module" src="lista.js"></script>
+  <style>
+    /* Estilos específicos para lista (desktop) */
+    body {
+      background: #f5f7fa;
+    }
+    
+    .app {
+      max-width: 1400px;
+      margin: 20px auto;
+    }
+    
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .toolbar-left {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex: 1;
+    }
+    
+    .toolbar-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .search-box {
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .filter-select {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      min-width: 160px;
+    }
+    
+    .table-container {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: calc(100vh - 280px);
+    }
+    
+    .surveys-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    
+    .surveys-table thead {
+      background: linear-gradient(180deg, #f8f9fa, #e9ecef);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .surveys-table th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--ink);
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .surveys-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+    }
+    
+    .surveys-table tbody tr {
+      transition: background 0.15s;
+    }
+    
+    .surveys-table tbody tr:hover {
+      background: #f9fbff;
+    }
+    
+    .surveys-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .survey-number {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 15px;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    
+    .status-submitted {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    
+    .status-draft {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    
+    .status-approved {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+    
+    .btn-action {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .btn-action:hover {
+      background: #f5f5f5;
+      border-color: var(--primary);
+    }
+    
+    .btn-delete {
+      background: #fee;
+      color: #b91c1c;
+      border-color: #fca;
+    }
+    
+    .btn-delete:hover {
+      background: #fdd;
+      border-color: #f87171;
+    }
+    
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    
+    .location-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    
+    .location-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <img class="logo" src="logch.png" alt="Consultorios Clínicos" />
+        <div>
+          <h1>Lista de Encuestas</h1>
+          <div class="sub">Gestión y seguimiento de encuestas realizadas</div>
+        </div>
+      </div>
+      <div class="session">
+        <span id="user-email" class="muted"></span>
+        <button id="btn-back" class="btn btn-outline">← Dashboard</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <!-- Estadísticas -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-label">Total Encuestas</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Enviadas</div>
+          <div class="stat-value" id="stat-submitted">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Borradores</div>
+          <div class="stat-value" id="stat-draft">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Aprobadas</div>
+          <div class="stat-value" id="stat-approved">0</div>
+        </div>
+      </div>
+
+      <!-- Barra de herramientas -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <input 
+            type="text" 
+            id="search-input" 
+            class="search-box"
+            placeholder="🔍 Buscar por encuestador..." 
+          />
+          <select id="filter-status" class="filter-select">
+            <option value="">Todos los estados</option>
+            <option value="submitted">Enviadas</option>
+            <option value="draft">Borradores</option>
+            <option value="approved">Aprobadas</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <span id="total-count" class="tag">0 resultados</span>
+          <button id="btn-export" class="btn btn-outline">📥 Exportar CSV</button>
+          <button id="btn-refresh" class="btn">🔄 Actualizar</button>
+        </div>
+      </div>
+
+      <!-- Tabla de encuestas -->
+      <div class="table-container">
+        <div class="table-wrapper">
+          <table class="surveys-table">
+            <thead>
+              <tr>
+                <th style="width: 120px;">N° Encuesta</th>
+                <th style="width: 200px;">Encuestador</th>
+                <th style="width: 160px;">Fecha y Hora</th>
+                <th style="width: 220px;">Ubicación</th>
+                <th style="width: 110px;">Estado</th>
+                <th style="width: 300px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="surveys-tbody">
+              <tr>
+                <td colspan="6" style="text-align:center;padding:60px 20px;color:var(--muted);">
+                  <div style="font-size: 48px;margin-bottom: 16px;">📋</div>
+                  <div style="font-size: 16px;font-weight: 500;">Cargando encuestas...</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-foot">
+      <div>Consultorios Clínicos — Sistema de Gestión</div>
+      <div id="last-update" class="muted"></div>
+    </footer>
+  </div>
+</body>
+</html>
