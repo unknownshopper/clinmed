@@ -30,97 +30,285 @@
     <main class="app-main">
         <section id="capture-area" class="card">
         <form id="form-encuesta" class="form">
-          <h2>Datos del paciente</h2>
-          <div class="grid-2">
-            <label>
-              <span>Edad</span>
-              <input type="number" id="age" min="0" max="120" required placeholder="Ej. 35" />
-            </label>
-            <label>
-              <span>Género</span>
-              <select id="gender" required>
-                <option value="">Selecciona…</option>
-                <option>Femenino</option>
-                <option>Masculino</option>
-                <option>Otro</option>
-                <option>Prefiere no decir</option>
-              </select>
-            </label>
-          </div>
-
-          <h2>Servicio</h2>
-          <div class="grid-2">
-            <label>
-              <span>Tipo de servicio</span>
-              <select id="service_type" required>
-                <option value="">Selecciona…</option>
-                <option>Consulta general</option>
-                <option>Consulta especialidad</option>
-                <option>Laboratorio</option>
-                <option>Diagnóstico (Rayos X / US)</option>
-                <option>Otro</option>
-              </select>
-            </label>
-            <label>
-              <span>Tiempo de espera (min)</span>
-              <input type="number" id="wait_time" min="0" max="600" required placeholder="Ej. 25" />
-            </label>
-          </div>
-
-          <h2>Experiencia</h2>
-          <div class="grid-2">
-            <label>
-              <span>Satisfacción (1–5)</span>
-              <select id="satisfaction" required>
-                <option value="">Selecciona…</option>
-                <option value="1">1 — Muy mala</option>
-                <option value="2">2 — Mala</option>
-                <option value="3">3 — Regular</option>
-                <option value="4">4 — Buena</option>
-                <option value="5">5 — Excelente</option>
-              </select>
-            </label>
-            <label>
-              <span>¿Recomendaría? (NPS)</span>
-              <select id="nps" required>
-                <option value="">Selecciona…</option>
-                <option value="0">0 — Nada probable</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10 — Muy probable</option>
-              </select>
-            </label>
-          </div>
-
+          <h2>Identificación</h2>
           <label>
-            <span>Comentarios</span>
-            <input type="text" id="comments" placeholder="Opcional" />
+            <span>ID del Encuestador</span>
+            <input type="text" id="surveyor_id" required readonly style="background-color: #f3f4f6; cursor: not-allowed;" />
           </label>
+          
+          <h2>Datos demográficos</h2><div class="grid-2">
+  <label>
+    <span>Edad</span>
+    <input type="number" id="age" min="0" max="120" required placeholder="Ej. 35" />
+  </label>
+  <label>
+    <span>Género</span>
+    <select id="gender" required>
+      <option value="">Selecciona…</option>
+      <option>Femenino</option>
+      <option>Masculino</option>
+      <option>Otro</option>
+      <option>Prefiere no decir</option>
+    </select>
+  </label>
+</div>
 
-          <label class="row">
-            <input type="checkbox" id="consent" required />
-            <span>Confirmo consentimiento informado y uso anónimo de datos.</span>
-          </label>
+<div class="grid-2">
+  <label>
+    <span>Nivel de estudios</span>
+    <select id="education" required>
+      <option value="">Selecciona…</option>
+      <option>Sin estudios</option>
+      <option>Primaria</option>
+      <option>Secundaria</option>
+      <option>Preparatoria / Técnico</option>
+      <option>Licenciatura</option>
+      <option>Posgrado</option>
+    </select>
+  </label>
+  <label>
+    <span>Ocupación</span>
+    <select id="occupation" required>
+      <option value="">Selecciona…</option>
+      <option>Empleado</option>
+      <option>Independiente / Comerciante</option>
+      <option>Estudiante</option>
+      <option>Hogar</option>
+      <option>Jubilado</option>
+      <option>Desempleado</option>
+      <option>Otro</option>
+    </select>
+  </label>
+</div>
 
-          <div class="row" style="margin-top:12px">
-            <button id="btn-save" class="btn" type="submit">Guardar</button>
-            <button id="btn-save-submit" class="btn btn-outline" type="button" title="Guardar y enviar a revisión">Guardar y enviar</button>
-          </div>
+<label>
+  <span>Colonia / Zona donde vive</span>
+  <input type="text" id="neighborhood" placeholder="Ej. Centro, Col. Reforma" />
+</label>
 
-          <div id="msg" class="muted" style="margin-top:8px"></div>
-          <div id="meta" class="muted" style="margin-top:6px"></div>
-          <div id="view-actions" class="row" style="margin-top:8px; display:none">
-            <button id="btn-view-img" class="btn btn-outline" type="button">Ver imagen</button>
-            <button id="btn-edit" class="btn" type="button">Editar</button>
-            <button id="btn-delete" class="btn btn-outline" type="button">Eliminar</button>
-          </div>
+<h2>Acceso a servicios de salud</h2>
+
+<label>
+  <span>¿Cuenta con seguro médico?</span>
+  <select id="insurance" required>
+    <option value="">Selecciona…</option>
+    <option>No tengo seguro</option>
+    <option>IMSS</option>
+    <option>ISSSTE</option>
+    <option>Seguro Popular / INSABI</option>
+    <option>Seguro privado</option>
+    <option>Otro</option>
+  </select>
+</label>
+
+<label>
+  <span>En los últimos 6 meses, ¿dónde ha acudido principalmente para atención médica?</span>
+  <select id="main_provider" required>
+    <option value="">Selecciona…</option>
+    <option>Centro de salud público</option>
+    <option>Hospital público (IMSS, ISSSTE, SSA)</option>
+    <option>Consultorio en farmacia (Similares, Del Ahorro, etc.)</option>
+    <option>Consultorio privado independiente</option>
+    <option>Hospital privado</option>
+    <option>No he acudido</option>
+    <option>Otro</option>
+  </select>
+</label>
+
+<h2>Servicio recibido hoy</h2>
+
+<label>
+  <span>Tipo de servicio solicitado</span>
+  <select id="service_type" required>
+    <option value="">Selecciona…</option>
+    <option>Primeros auxilios / Urgencia menor</option>
+    <option>Curación de heridas</option>
+    <option>Sutura (costura de heridas)</option>
+    <option>Aplicación de inyección</option>
+    <option>Inmovilización (vendaje, férula)</option>
+    <option>Retiro de verrugas</option>
+    <option>Perforación de orejas (aretes)</option>
+    <option>Diagnóstico y canalización</option>
+    <option>Tratamiento de uñas enterradas</option>
+    <option>Consulta general</option>
+    <option>Compra de productos para curación</option>
+    <option>Otro</option>
+  </select>
+</label>
+
+<div class="grid-2">
+  <label>
+    <span>Tiempo de espera (minutos)</span>
+    <input type="number" id="wait_time" min="0" max="600" required placeholder="Ej. 5" />
+  </label>
+  <label>
+    <span>¿Es su primera visita a este consultorio?</span>
+    <select id="first_visit" required>
+      <option value="">Selecciona…</option>
+      <option value="yes">Sí, primera vez</option>
+      <option value="no">No, ya he venido antes</option>
+    </select>
+  </label>
+</div>
+
+<h2>Percepción del servicio</h2>
+
+<label>
+  <span>¿Por qué eligió este consultorio hoy? (puede seleccionar la razón principal)</span>
+  <select id="reason_choice" required>
+    <option value="">Selecciona…</option>
+    <option>Cercanía / Ubicación</option>
+    <option>Precio accesible</option>
+    <option>Rapidez de atención</option>
+    <option>No requiere cita</option>
+    <option>Horario extendido</option>
+    <option>Recomendación</option>
+    <option>Buena experiencia previa</option>
+    <option>No tengo otra opción cercana</option>
+    <option>Otro</option>
+  </select>
+</label>
+
+<div class="grid-2">
+  <label>
+    <span>Calidad de atención recibida (1–5)</span>
+    <select id="quality" required>
+      <option value="">Selecciona…</option>
+      <option value="1">1 — Muy mala</option>
+      <option value="2">2 — Mala</option>
+      <option value="3">3 — Regular</option>
+      <option value="4">4 — Buena</option>
+      <option value="5">5 — Excelente</option>
+    </select>
+  </label>
+  <label>
+    <span>Trato del personal (1–5)</span>
+    <select id="staff_treatment" required>
+      <option value="">Selecciona…</option>
+      <option value="1">1 — Muy malo</option>
+      <option value="2">2 — Malo</option>
+      <option value="3">3 — Regular</option>
+      <option value="4">4 — Bueno</option>
+      <option value="5">5 — Excelente</option>
+    </select>
+  </label>
+</div>
+
+<div class="grid-2">
+  <label>
+    <span>Limpieza e higiene del lugar (1–5)</span>
+    <select id="cleanliness" required>
+      <option value="">Selecciona…</option>
+      <option value="1">1 — Muy mala</option>
+      <option value="2">2 — Mala</option>
+      <option value="3">3 — Regular</option>
+      <option value="4">4 — Buena</option>
+      <option value="5">5 — Excelente</option>
+    </select>
+  </label>
+  <label>
+    <span>Relación calidad-precio (1–5)</span>
+    <select id="value_for_money" required>
+      <option value="">Selecciona…</option>
+      <option value="1">1 — Muy mala</option>
+      <option value="2">2 — Mala</option>
+      <option value="3">3 — Regular</option>
+      <option value="4">4 — Buena</option>
+      <option value="5">5 — Excelente</option>
+    </select>
+  </label>
+</div>
+
+<label>
+  <span>Satisfacción general (1–5)</span>
+  <select id="satisfaction" required>
+    <option value="">Selecciona…</option>
+    <option value="1">1 — Muy insatisfecho</option>
+    <option value="2">2 — Insatisfecho</option>
+    <option value="3">3 — Neutral</option>
+    <option value="4">4 — Satisfecho</option>
+    <option value="5">5 — Muy satisfecho</option>
+  </select>
+</label>
+
+<label>
+  <span>¿Recomendaría este consultorio? (0–10)</span>
+  <select id="nps" required>
+    <option value="">Selecciona…</option>
+    <option value="0">0 — Nada probable</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10 — Muy probable</option>
+  </select>
+</label>
+
+<h2>Comparación con otros servicios</h2>
+
+<label>
+  <span>Comparado con centros de salud públicos, este servicio es:</span>
+  <select id="vs_public" required>
+    <option value="">Selecciona…</option>
+    <option>Mucho mejor</option>
+    <option>Mejor</option>
+    <option>Similar</option>
+    <option>Peor</option>
+    <option>Mucho peor</option>
+    <option>No he usado centros públicos</option>
+  </select>
+</label>
+
+<label>
+  <span>Comparado con consultorios en farmacias (Similares, Del Ahorro), este servicio es:</span>
+  <select id="vs_pharmacy" required>
+    <option value="">Selecciona…</option>
+    <option>Mucho mejor</option>
+    <option>Mejor</option>
+    <option>Similar</option>
+    <option>Peor</option>
+    <option>Mucho peor</option>
+    <option>No he usado consultorios de farmacia</option>
+  </select>
+</label>
+
+<h2>Necesidades y sugerencias</h2>
+
+<label>
+  <span>¿Qué servicio adicional le gustaría que ofreciéramos?</span>
+  <select id="desired_service">
+    <option value="">Selecciona (opcional)…</option>
+    <option>Análisis clínicos básicos</option>
+    <option>Toma de presión y signos vitales</option>
+    <option>Electrocardiograma</option>
+    <option>Nebulizaciones</option>
+    <option>Pruebas rápidas (COVID, embarazo, glucosa)</option>
+    <option>Venta de medicamentos</option>
+    <option>Consultas especializadas</option>
+    <option>Servicio a domicilio</option>
+    <option>Otro</option>
+  </select>
+</label>
+
+<label>
+  <span>Comentarios o sugerencias</span>
+  <textarea id="comments" rows="3" placeholder="Opcional: comparta su experiencia o sugerencias"></textarea>
+</label>
+
+<label class="row">
+  <input type="checkbox" id="consent" required />
+  <span>Confirmo consentimiento informado y uso anónimo de datos para mejora del servicio.</span>
+</label>
+
+<div class="row" style="margin-top:12px">
+  <button id="btn-save" class="btn" type="submit">Guardar</button>
+  <button id="btn-save-submit" class="btn btn-outline" type="button" title="Guardar y enviar a revisión">Guardar y enviar</button>
+</div>
 
         </form>
       </section>

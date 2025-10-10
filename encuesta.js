@@ -68,12 +68,27 @@ const btnSave = el("btn-save");
 const btnSaveSubmit = el("btn-save-submit");
 
 const fields = {
+  surveyor_id: el("surveyor_id"),
   age: el("age"),
   gender: el("gender"),
+  education: el("education"),
+  occupation: el("occupation"),
+  neighborhood: el("neighborhood"),
+  insurance: el("insurance"),
+  main_provider: el("main_provider"),
   service_type: el("service_type"),
   wait_time: el("wait_time"),
+  first_visit: el("first_visit"),
+  reason_choice: el("reason_choice"),
+  quality: el("quality"),
+  staff_treatment: el("staff_treatment"),
+  cleanliness: el("cleanliness"),
+  value_for_money: el("value_for_money"),
   satisfaction: el("satisfaction"),
   nps: el("nps"),
+  vs_public: el("vs_public"),
+  vs_pharmacy: el("vs_pharmacy"),
+  desired_service: el("desired_service"),
   comments: el("comments"),
   consent: el("consent"),
 };
@@ -88,12 +103,27 @@ function setMessage(text, isError = false) {
 
 function serializePayload() {
   return {
+    surveyor_id: (fields.surveyor_id.value || "").trim(),
     age: Number(fields.age.value),
     gender: fields.gender.value,
+    education: fields.education.value,
+    occupation: fields.occupation.value,
+    neighborhood: (fields.neighborhood.value || "").trim(),
+    insurance: fields.insurance.value,
+    main_provider: fields.main_provider.value,
     service_type: fields.service_type.value,
     wait_time: Number(fields.wait_time.value),
+    first_visit: fields.first_visit.value,
+    reason_choice: fields.reason_choice.value,
+    quality: Number(fields.quality.value),
+    staff_treatment: Number(fields.staff_treatment.value),
+    cleanliness: Number(fields.cleanliness.value),
+    value_for_money: Number(fields.value_for_money.value),
     satisfaction: Number(fields.satisfaction.value),
     nps: Number(fields.nps.value),
+    vs_public: fields.vs_public.value,
+    vs_pharmacy: fields.vs_pharmacy.value,
+    desired_service: fields.desired_service.value || "",
     comments: (fields.comments.value || "").trim(),
   };
 }
@@ -102,16 +132,31 @@ function validateForm() {
   if (!fields.consent.checked) {
     throw new Error("Falta consentimiento informado.");
   }
+  if (!fields.surveyor_id.value || fields.surveyor_id.value.trim() === "") {
+    throw new Error("Ingresa el ID del encuestador.");
+  }
   if (!fields.age.value || Number(fields.age.value) < 0) {
     throw new Error("Edad inválida.");
   }
   if (!fields.gender.value) throw new Error("Selecciona género.");
+  if (!fields.education.value) throw new Error("Selecciona nivel de estudios.");
+  if (!fields.occupation.value) throw new Error("Selecciona ocupación.");
+  if (!fields.insurance.value) throw new Error("Selecciona seguro médico.");
+  if (!fields.main_provider.value) throw new Error("Selecciona proveedor principal.");
   if (!fields.service_type.value) throw new Error("Selecciona tipo de servicio.");
   if (!fields.wait_time.value || Number(fields.wait_time.value) < 0) {
     throw new Error("Tiempo de espera inválido.");
   }
+  if (!fields.first_visit.value) throw new Error("Indica si es primera visita.");
+  if (!fields.reason_choice.value) throw new Error("Selecciona razón de elección.");
+  if (!fields.quality.value) throw new Error("Selecciona calidad de atención.");
+  if (!fields.staff_treatment.value) throw new Error("Selecciona trato del personal.");
+  if (!fields.cleanliness.value) throw new Error("Selecciona limpieza.");
+  if (!fields.value_for_money.value) throw new Error("Selecciona relación calidad-precio.");
   if (!fields.satisfaction.value) throw new Error("Selecciona satisfacción.");
   if (fields.nps.value === "") throw new Error("Selecciona NPS.");
+  if (!fields.vs_public.value) throw new Error("Selecciona comparación con centros públicos.");
+  if (!fields.vs_pharmacy.value) throw new Error("Selecciona comparación con farmacias.");
 }
 
 async function getGeo() {
@@ -164,12 +209,27 @@ import {
   }
   
   function fillFormFromPayload(payload = {}) {
+    if ("surveyor_id" in payload) fields.surveyor_id.value = payload.surveyor_id ?? "";
     if ("age" in payload) fields.age.value = payload.age ?? "";
     if ("gender" in payload) fields.gender.value = payload.gender ?? "";
+    if ("education" in payload) fields.education.value = payload.education ?? "";
+    if ("occupation" in payload) fields.occupation.value = payload.occupation ?? "";
+    if ("neighborhood" in payload) fields.neighborhood.value = payload.neighborhood ?? "";
+    if ("insurance" in payload) fields.insurance.value = payload.insurance ?? "";
+    if ("main_provider" in payload) fields.main_provider.value = payload.main_provider ?? "";
     if ("service_type" in payload) fields.service_type.value = payload.service_type ?? "";
     if ("wait_time" in payload) fields.wait_time.value = payload.wait_time ?? "";
+    if ("first_visit" in payload) fields.first_visit.value = payload.first_visit ?? "";
+    if ("reason_choice" in payload) fields.reason_choice.value = payload.reason_choice ?? "";
+    if ("quality" in payload) fields.quality.value = payload.quality ?? "";
+    if ("staff_treatment" in payload) fields.staff_treatment.value = payload.staff_treatment ?? "";
+    if ("cleanliness" in payload) fields.cleanliness.value = payload.cleanliness ?? "";
+    if ("value_for_money" in payload) fields.value_for_money.value = payload.value_for_money ?? "";
     if ("satisfaction" in payload) fields.satisfaction.value = payload.satisfaction ?? "";
     if ("nps" in payload) fields.nps.value = payload.nps ?? "";
+    if ("vs_public" in payload) fields.vs_public.value = payload.vs_public ?? "";
+    if ("vs_pharmacy" in payload) fields.vs_pharmacy.value = payload.vs_pharmacy ?? "";
+    if ("desired_service" in payload) fields.desired_service.value = payload.desired_service ?? "";
     if ("comments" in payload) fields.comments.value = payload.comments ?? "";
     // consentimiento no se almacena; solo aplica en captura
   }
@@ -315,12 +375,25 @@ function bindEvents() {
 
 function boot() {
   bindEvents();
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     currentUser = user || null;
     userEmail.textContent = user?.email ?? "";
     if (!user) {
       // si no hay sesión, regresar a login
       window.location.href = "index.html";
+      return;
+    }
+    
+    // Llenar automáticamente el ID del encuestador con el email del usuario
+    if (fields.surveyor_id) {
+      fields.surveyor_id.value = user.email || "";
+    }
+    
+    currentRole = await getMyRole();
+    await maybeLoadReadOnlySurvey();
+    const paramsHash = location.hash;
+    if (paramsHash === "#edit" && ["supervisor","admin"].includes(currentRole)) {
+      document.getElementById("btn-edit")?.click();
     }
   });
 }
