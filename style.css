@@ -50,3 +50,120 @@ input:not([type="checkbox"]),select{
 a.card{ display:block; text-decoration:none; color:inherit; }
 a.card:hover{ border-color:#c6d0e0; background:#f9fbff; }
 a.card{ cursor:pointer; }
+
+/* Radio buttons y checkboxes inline */
+.radio-group, .checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.radio-inline, .checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fff;
+  font-size: 14px;
+}
+
+.radio-inline:hover, .checkbox-inline:hover {
+  border-color: var(--primary);
+  background: #f0f7ff;
+}
+
+.radio-inline input[type="radio"],
+.checkbox-inline input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.radio-inline input[type="radio"]:checked,
+.checkbox-inline input[type="checkbox"]:checked {
+  accent-color: var(--primary);
+}
+
+/* Estilo para labels cuando el input está seleccionado */
+.radio-inline:has(input[type="radio"]:checked),
+.checkbox-inline:has(input[type="checkbox"]:checked) {
+  background: #e3f2fd;
+  border-color: var(--primary);
+  border-width: 2px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Ratings horizontales más compactos */
+.rating-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.rating-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fff;
+  font-weight: 600;
+  min-width: 50px;
+}
+
+.rating-inline:hover {
+  border-color: var(--primary);
+  background: #f0f7ff;
+  transform: scale(1.05);
+}
+
+/* Estilo para rating cuando está seleccionado */
+.rating-inline:has(input[type="radio"]:checked) {
+  background: #e3f2fd;
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.1);
+}
+.rating-inline input[type="radio"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.rating-inline input[type="radio"]:checked {
+  accent-color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 760px) {
+  .radio-group, .checkbox-group {
+    gap: 8px;
+  }
+  
+  .radio-inline, .checkbox-inline {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  
+  .rating-group {
+    gap: 4px;
+  }
+  
+  .rating-inline {
+    padding: 8px 10px;
+    min-width: 40px;
+    font-size: 14px;
+  }
+}

@@ -93,6 +93,9 @@ function roleName() {
   if (email === "admin@unknownshoppers.com") return "admin";
   if (email === "supervision@clinmed.com") return "supervisor";
   if (email === "encuestra@clinmed.com") return "encuestador";
+  if (email === "encuestador1@clinmed.com") return "encuestador";
+  if (email === "encuestador2@clinmed.com") return "encuestador";
+  if (email === "encuestador3@clinmed.com") return "encuestador";
   return base;
 }
 
