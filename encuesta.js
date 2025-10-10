@@ -449,6 +449,7 @@ function bindEvents() {
       }
     });
   });
+}
 
 function boot() {
   bindEvents();
@@ -475,4 +476,3 @@ function boot() {
   });
 }
 window.addEventListener("DOMContentLoaded", boot);
-}
